@@ -1,0 +1,39 @@
+{
+  "name": "netcozy-connect",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "db:check": "node --env-file-if-exists=.env scripts/db-check.mjs",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
+    "test:browser": "node tests/browser.mjs",
+    "format": "prettier --write src tests scripts package.json tsconfig.json next.config.mjs eslint.config.mjs",
+    "format:check": "prettier --check src tests scripts package.json tsconfig.json next.config.mjs eslint.config.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.5",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.15",
+    "@types/node": "22.20.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "16.4.5",
+    "playwright": "1.64.1",
+    "prettier": "^3.9.10",
+    "typescript": "^5.9.3"
+  }
+}
