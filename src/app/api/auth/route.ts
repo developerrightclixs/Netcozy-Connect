@@ -1,3 +1,4 @@
+import { authFailure } from "@/features/auth/errors.mjs";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import {
@@ -13,7 +14,13 @@ import { authSchema, loginSchema } from "@/features/core/validation";
 export async function POST(request: NextRequest) {
   try {
     sameOrigin(request);
-    const body = await request.json();
+    const body = z
+      .object({
+        action: z.enum(["login", "signup", "logout", "verify", "resend"]),
+        data: z.unknown().optional(),
+      })
+      .strict()
+      .parse(await request.json());
     const client = new Supabase();
     let response: NextResponse;
     if (body.action === "logout") {
@@ -44,7 +51,9 @@ export async function POST(request: NextRequest) {
     if (!["login", "signup", "resend"].includes(body.action))
       throw new ServiceError(400, "Unknown authentication action.");
     if (body.action === "resend") {
-      const email = z.string().email().parse(body.data?.email);
+      const { email } = z
+        .object({ email: z.string().trim().email() })
+        .parse(body.data);
       await client.request("/auth/v1/resend", "POST", {
         type: "signup",
         email,
@@ -54,6 +63,9 @@ export async function POST(request: NextRequest) {
         message: "If eligible, a confirmation email has been sent.",
       });
     }
+    const input = (body.action === "signup" ? authSchema : loginSchema).parse(
+      body.data,
+    );
     const settings = await client.request<{ mailer_autoconfirm?: boolean }>(
       "/auth/v1/settings",
     );
@@ -62,9 +74,6 @@ export async function POST(request: NextRequest) {
         503,
         "Enable email confirmation in your Supabase Auth settings before using this application.",
       );
-    const input = (body.action === "signup" ? authSchema : loginSchema).parse(
-      body.data,
-    );
     if (body.action === "signup") {
       await client.request("/auth/v1/signup", "POST", input);
       return NextResponse.json({
@@ -84,15 +93,21 @@ export async function POST(request: NextRequest) {
     setSession(response, tokens);
     return response;
   } catch (e) {
-    const status = e instanceof ServiceError ? e.status : 400;
+    const failure =
+      e instanceof ServiceError
+        ? { status: e.status, code: "AUTH_PROVIDER", error: e.message }
+        : authFailure(e);
+    if (failure.status >= 500)
+      console.error(
+        JSON.stringify({
+          event: "authentication_failed",
+          code: failure.code,
+          errorType: e instanceof Error ? e.name : "Unknown",
+        }),
+      );
     return NextResponse.json(
-      {
-        error:
-          e instanceof ServiceError
-            ? e.message
-            : "Check your email, password and input fields.",
-      },
-      { status },
+      { error: failure.error, code: failure.code },
+      { status: failure.status, headers: { "Cache-Control": "no-store" } },
     );
   }
 }

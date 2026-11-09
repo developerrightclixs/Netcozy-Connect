@@ -54,6 +54,18 @@ try {
   assert.equal(csrf.status, 403);
   const unauthorized = await fetch(base + "/api/core");
   assert.equal(unauthorized.status, 401);
+  const invalidInput = await fetch(base + "/api/auth", {
+    method: "POST",
+    headers: { Origin: base, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "signup",
+      data: { email: "validation@example.test", password: "short" },
+    }),
+  });
+  assert.equal(invalidInput.status, 400);
+  const inputError = await invalidInput.json();
+  assert.equal(inputError.code, "AUTH_INPUT");
+  assert.match(inputError.error, /at least 12/);
   browser = await chromium.launch({ headless: true, channel: "chrome" });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },

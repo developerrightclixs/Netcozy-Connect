@@ -1,0 +1,10 @@
+﻿# Local files are not deployment inputs. Vercel installs from package-lock.json.
+.npm-cache/
+node_modules/
+.next/
+coverage/
+.env*
+!.env.example
+*.log
+*.tsbuildinfo
+.git/

@@ -1,6 +1,6 @@
 import "server-only";
 import type { NextRequest, NextResponse } from "next/server";
-import { supabaseConfig } from "../env.mjs";
+import { supabaseConfig, applicationOrigin } from "../env.mjs";
 export class ServiceError extends Error {
   constructor(
     public status: number,
@@ -133,7 +133,7 @@ export function clearSession(response: NextResponse) {
     });
 }
 export function sameOrigin(request: NextRequest) {
-  const expected = process.env.APP_BASE_URL ?? request.nextUrl.origin;
+  const expected = applicationOrigin(request.nextUrl.origin);
   if (request.headers.get("origin") !== new URL(expected).origin)
     throw new ServiceError(403, "Request origin is not allowed.");
 }

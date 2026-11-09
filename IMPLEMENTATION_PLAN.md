@@ -54,3 +54,17 @@ The user reported Supabase API reachability. No hosted migration, Auth account o
 ## Phase 1 delivery status
 
 Shared-core code and local verification are complete. Hosted acceptance remains open, so Phase 1 is not declared fully complete. No Phase 2 work was started. Application code/configuration, the portable lockfile, two reviewed migrations, deterministic demo records, meaningful tests and SUPABASE_SETUP.md are ready for review. No production integration or remote mutation was performed.
+
+## Vercel deployment support
+
+The user is deploying Phase 1 to Vercel. Reviewed Node 24 compatibility, server-only environment names, HTTPS cookies, canonical-origin enforcement and Supabase confirmation callback setup. Added VERCEL_DEPLOYMENT.md and .vercelignore; deployment artifacts and .env remain excluded. No application logic, remote settings or hosted data changed, and no next-phase work started. Existing application verification remains applicable; hosting and real email checks must be run against the deployed URL.
+
+## Phase 1 authentication deployment fix
+
+User reported the generic authentication form error while deploying to Vercel. Inspection showed that configuration exceptions and unexpected failures were incorrectly reported as credential/input errors. Added typed configuration failures, safe field-specific messages, validated origin configuration, structured redacted server diagnostics and stable response codes. Validated authentication request data before making provider requests. No database migration, design change or next-phase feature is involved.
+
+Verification: 31 tests passed, TypeScript passed, production build passed. A compiled-app test with missing provider variables passed: HTTP 503 / AUTH_CONFIGURATION, with no credential disclosure. Final browser regression, zero-warning lint and format checks all passed. The actual deployed cause remains unconfirmed because no deployment URL or server response beyond the original message was supplied; no Vercel environment values were accessed or changed.
+
+## Typography update within Phase 1
+
+User selected Google Fonts Syne and Figtree. Applied Syne to headings, brand and prominent numeric scores; Figtree to body text, navigation and inherited controls. Added Google Fonts stylesheet import with display=swap, limited requested weights, preconnect hints and system fallback stacks. External fonts load in the browser; application builds do not require downloading font binaries. Existing colors, layout, workflows and phase boundaries are preserved. Google font hosts are blocked by EACCES in the agent environment, so live font download must be checked on the deployed site. Lint and production build (including TypeScript) passed.

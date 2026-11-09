@@ -17,7 +17,8 @@
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "test:browser": "node tests/browser.mjs",
     "format": "prettier --write src tests scripts package.json tsconfig.json next.config.mjs eslint.config.mjs",
-    "format:check": "prettier --check src tests scripts package.json tsconfig.json next.config.mjs eslint.config.mjs"
+    "format:check": "prettier --check src tests scripts package.json tsconfig.json next.config.mjs eslint.config.mjs",
+    "test:auth-deployment": "node tests/auth-deployment.mjs"
   },
   "dependencies": {
     "next": "16.4.5",

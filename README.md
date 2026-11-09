@@ -49,3 +49,9 @@ Actual results and outstanding hosted verification are tracked in [IMPLEMENTATIO
 Supabase API reachability was verified by the user. Local application/SQL integration tests use the test fixture; hosted migrations, real email delivery and live end-to-end acceptance remain pending. Identity is DEMO (never a real verification); LinkedIn OAuth/import, external email campaigns, SMS/WhatsApp, payments, licensed datasets and AI media providers are BLOCKED/unimplemented. No service pretends to be live. Production hardening and marketplace modules remain later-phase work.
 
 References: [Supabase Auth HTTP API](https://supabase.github.io/auth/), [email templates](https://supabase.com/docs/guides/auth/auth-email-templates), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [SQL migrations](https://supabase.com/docs/guides/local-development/database-migrations).
+
+Vercel deployment instructions: [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md).
+
+Authentication deployment regression: run npm.cmd run test:auth-deployment after a successful build to verify that missing server configuration produces a safe HTTP 503 configuration error.
+
+Typography: Syne for headings/brand/scores and Figtree for body/controls, loaded through Google Fonts with swap and system fallbacks.

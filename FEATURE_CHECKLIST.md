@@ -57,3 +57,10 @@ Phase 1 implementation is prepared and locally exercised; it is not declared ful
 - [ ] LI3K creative workflows and usage reporting.
 - [ ] Authorized live marketing/provider integrations.
 - [ ] Production security hardening, monitoring, deployment, backups and restoration.
+
+### Phase 1 authentication deployment correction
+
+- [x] Distinguish server configuration failures from field-validation and provider errors.
+- [x] Add safe field-specific errors, strict request validation and redacted event diagnostics.
+- [x] Regression suite: 31 tests passed, production build/TypeScript passed, missing-environment compiled-app check passed.
+- [ ] Confirm the deployed issue after redeploying the updated code and configuring the actual Vercel environment.

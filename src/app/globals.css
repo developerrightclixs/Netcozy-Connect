@@ -1,4 +1,6 @@
-﻿:root {
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap");
+
+:root {
   color-scheme: light;
   --navy: #152b3b;
   --teal: #087e73;
@@ -6,7 +8,9 @@
   --border: #e0e8e9;
   --bg: #f5f8f8;
   --white: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  --font-body: "Figtree", Arial, Helvetica, sans-serif;
+  --font-heading: "Syne", "Figtree", Arial, sans-serif;
+  font-family: var(--font-body);
   color: var(--navy);
   background: var(--bg);
   font-size: 14px;
@@ -55,6 +59,14 @@ h2,
 h3,
 p {
   margin-top: 0;
+}
+h1,
+h2,
+h3,
+.brand,
+.stat strong,
+.score {
+  font-family: var(--font-heading);
 }
 h1 {
   font-size: 36px;
