@@ -1,3 +1,5 @@
+import { rateLimitDetails } from "@/features/auth/rate-limits.mjs";
+import { providerAuthFailure } from "@/features/auth/provider-errors.mjs";
 import "server-only";
 import type { NextRequest, NextResponse } from "next/server";
 import { supabaseConfig, applicationOrigin } from "../env.mjs";
@@ -5,6 +7,8 @@ export class ServiceError extends Error {
   constructor(
     public status: number,
     message: string,
+    public code?: string,
+    public retryAfterSeconds?: number,
   ) {
     super(message);
   }
@@ -23,6 +27,34 @@ type Tokens = {
 export class Supabase {
   private config = supabaseConfig();
   constructor(public token?: string) {}
+  async uploadEvidence(key: string, bytes: Uint8Array, mime: string) {
+    let response: Response;
+    try {
+      response = await fetch(
+        this.config.url + "/storage/v1/object/netcozy-property-evidence/" + key,
+        {
+          method: "POST",
+          headers: {
+            apikey: this.config.publishableKey,
+            Authorization: "Bearer " + this.token,
+            "Content-Type": mime,
+            "x-upsert": "false",
+          },
+          body: bytes as BodyInit,
+          cache: "no-store",
+          redirect: "error",
+          signal: AbortSignal.timeout(15000),
+        },
+      );
+    } catch {
+      throw new ServiceError(503, "Private evidence storage is unavailable.");
+    }
+    if (!response.ok)
+      throw new ServiceError(
+        400,
+        "Evidence upload was rejected. Check private bucket setup and permissions.",
+      );
+  }
   async request<T>(path: string, method = "GET", body?: unknown): Promise<T> {
     let response: Response;
     try {
@@ -43,22 +75,34 @@ export class Supabase {
       throw new ServiceError(503, "Supabase is unavailable. Please try again.");
     }
     if (!response.ok) {
-      if (response.status === 401)
+      if (response.status === 401 && !path.startsWith("/auth/"))
         throw new ServiceError(401, "Please sign in again.");
-      if (response.status === 429)
+      if (response.status === 429) {
+        const payload = await response.json().catch(() => null);
+        const details = rateLimitDetails(
+          typeof payload?.code === "string"
+            ? payload.code
+            : payload?.error_code,
+          response.headers.get("Retry-After"),
+        );
         throw new ServiceError(
           429,
-          "Too many requests. Please wait before trying again.",
+          path.startsWith("/auth/")
+            ? details.message
+            : "Too many requests. Please wait before trying again.",
+          path.startsWith("/auth/") ? details.code : "RATE_LIMITED",
+          details.retryAfterSeconds,
         );
-      if (path.startsWith("/auth/"))
-        throw new ServiceError(
-          400,
-          "Authentication failed. Check your details, confirmation link and Supabase Auth configuration.",
-        );
+      }
+      if (path.startsWith("/auth/")) {
+        const payload = await response.json().catch(() => null);
+        const failure = providerAuthFailure(payload, response.status);
+        throw new ServiceError(failure.status, failure.message, failure.code);
+      }
       if (response.status === 404)
         throw new ServiceError(
           503,
-          "Database setup is pending. Apply the Phase 1 development migrations.",
+          "Database setup is pending. Apply the reviewed development migrations for this workflow.",
         );
       throw new ServiceError(
         response.status === 403 ? 403 : 400,

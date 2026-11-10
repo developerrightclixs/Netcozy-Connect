@@ -1,0 +1,41 @@
+address,region,postal_code,lot_acres,zoning,utilities,road_access,asking_price,listing_status
+Demo Lot 01 Sample Road,Texas,DEMO-001,1.000,Mixed use,Not supplied,Not supplied,50000,AVAILABLE
+Demo Lot 02 Sample Road,Texas,DEMO-002,1.500,Residential,Illustrative connection nearby,Illustrative paved access,55000,AVAILABLE
+Demo Lot 03 Sample Road,Texas,DEMO-003,2.000,Residential,Illustrative connection nearby,Illustrative paved access,60000,AVAILABLE
+Demo Lot 04 Sample Road,Texas,DEMO-004,2.500,Residential,Not supplied,Illustrative paved access,65000,AVAILABLE
+Demo Lot 05 Sample Road,Texas,DEMO-005,3.000,Mixed use,Illustrative connection nearby,Illustrative paved access,70000,AVAILABLE
+Demo Lot 06 Sample Road,Texas,DEMO-006,3.500,Residential,Illustrative connection nearby,Not supplied,75000,AVAILABLE
+Demo Lot 07 Sample Road,Texas,DEMO-007,4.000,Residential,Not supplied,Illustrative paved access,80000,AVAILABLE
+Demo Lot 08 Sample Road,Texas,DEMO-008,4.500,Residential,Illustrative connection nearby,Illustrative paved access,85000,AVAILABLE
+Demo Lot 09 Sample Road,Texas,DEMO-009,5.000,Mixed use,Illustrative connection nearby,Illustrative paved access,90000,AVAILABLE
+Demo Lot 10 Sample Road,Texas,DEMO-010,5.500,Residential,Not supplied,Illustrative paved access,95000,AVAILABLE
+Demo Lot 11 Sample Road,Texas,DEMO-011,1.000,Residential,Illustrative connection nearby,Not supplied,100000,AVAILABLE
+Demo Lot 12 Sample Road,Texas,DEMO-012,1.500,Residential,Illustrative connection nearby,Illustrative paved access,105000,AVAILABLE
+Demo Lot 13 Sample Road,Texas,DEMO-013,2.000,Mixed use,Not supplied,Illustrative paved access,110000,AVAILABLE
+Demo Lot 14 Sample Road,Texas,DEMO-014,2.500,Residential,Illustrative connection nearby,Illustrative paved access,115000,AVAILABLE
+Demo Lot 15 Sample Road,Texas,DEMO-015,3.000,Residential,Illustrative connection nearby,Illustrative paved access,120000,AVAILABLE
+Demo Lot 16 Sample Road,Texas,DEMO-016,3.500,Residential,Not supplied,Not supplied,125000,AVAILABLE
+Demo Lot 17 Sample Road,Texas,DEMO-017,4.000,Mixed use,Illustrative connection nearby,Illustrative paved access,130000,AVAILABLE
+Demo Lot 18 Sample Road,Texas,DEMO-018,4.500,Residential,Illustrative connection nearby,Illustrative paved access,135000,AVAILABLE
+Demo Lot 19 Sample Road,Texas,DEMO-019,5.000,Residential,Not supplied,Illustrative paved access,140000,AVAILABLE
+Demo Lot 20 Sample Road,Texas,DEMO-020,5.500,Residential,Illustrative connection nearby,Illustrative paved access,145000,AVAILABLE
+Demo Lot 21 Sample Road,Texas,DEMO-021,1.000,Mixed use,Illustrative connection nearby,Not supplied,150000,AVAILABLE
+Demo Lot 22 Sample Road,Texas,DEMO-022,1.500,Residential,Not supplied,Illustrative paved access,155000,AVAILABLE
+Demo Lot 23 Sample Road,Texas,DEMO-023,2.000,Residential,Illustrative connection nearby,Illustrative paved access,160000,AVAILABLE
+Demo Lot 24 Sample Road,Texas,DEMO-024,2.500,Residential,Illustrative connection nearby,Illustrative paved access,165000,AVAILABLE
+Demo Lot 25 Sample Road,Texas,DEMO-025,3.000,Mixed use,Not supplied,Illustrative paved access,170000,AVAILABLE
+Demo Lot 26 Sample Road,Texas,DEMO-026,3.500,Residential,Illustrative connection nearby,Not supplied,175000,AVAILABLE
+Demo Lot 27 Sample Road,Texas,DEMO-027,4.000,Residential,Illustrative connection nearby,Illustrative paved access,180000,AVAILABLE
+Demo Lot 28 Sample Road,Texas,DEMO-028,4.500,Residential,Not supplied,Illustrative paved access,185000,AVAILABLE
+Demo Lot 29 Sample Road,Texas,DEMO-029,5.000,Mixed use,Illustrative connection nearby,Illustrative paved access,190000,AVAILABLE
+Demo Lot 30 Sample Road,Texas,DEMO-030,5.500,Residential,Illustrative connection nearby,Illustrative paved access,195000,AVAILABLE
+Demo Lot 31 Sample Road,Florida,DEMO-031,1.000,Residential,Not supplied,Not supplied,200000,AVAILABLE
+Demo Lot 32 Sample Road,Florida,DEMO-032,1.500,Residential,Illustrative connection nearby,Illustrative paved access,205000,AVAILABLE
+Demo Lot 33 Sample Road,Florida,DEMO-033,2.000,Mixed use,Illustrative connection nearby,Illustrative paved access,210000,AVAILABLE
+Demo Lot 34 Sample Road,Florida,DEMO-034,2.500,Residential,Not supplied,Illustrative paved access,215000,AVAILABLE
+Demo Lot 35 Sample Road,Florida,DEMO-035,3.000,Residential,Illustrative connection nearby,Illustrative paved access,220000,AVAILABLE
+Demo Lot 36 Sample Road,Florida,DEMO-036,3.500,Residential,Illustrative connection nearby,Not supplied,225000,AVAILABLE
+Demo Lot 37 Sample Road,Florida,DEMO-037,4.000,Mixed use,Not supplied,Illustrative paved access,230000,AVAILABLE
+Demo Lot 38 Sample Road,Florida,DEMO-038,4.500,Residential,Illustrative connection nearby,Illustrative paved access,235000,AVAILABLE
+Demo Lot 39 Sample Road,Florida,DEMO-039,5.000,Residential,Illustrative connection nearby,Illustrative paved access,240000,AVAILABLE
+Demo Lot 40 Sample Road,Florida,DEMO-040,5.500,Residential,Not supplied,Illustrative paved access,245000,AVAILABLE

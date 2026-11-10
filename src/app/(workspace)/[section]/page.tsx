@@ -13,6 +13,7 @@ export default async function WorkspacePage({
       "matches",
       "outreach",
       "pipeline",
+      "properties",
       "settings",
       "admin",
     ].includes(section)

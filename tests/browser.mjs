@@ -66,6 +66,21 @@ try {
   const inputError = await invalidInput.json();
   assert.equal(inputError.code, "AUTH_INPUT");
   assert.match(inputError.error, /at least 12/);
+  testDb.limitNext("/auth/v1/resend", "over_email_send_rate_limit", 90);
+  const limited = await fetch(base + "/api/auth", {
+    method: "POST",
+    headers: { Origin: base, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "resend",
+      data: { email: "limit@example.test" },
+    }),
+  });
+  assert.equal(limited.status, 429);
+  assert.equal(limited.headers.get("Retry-After"), "90");
+  const limitedBody = await limited.json();
+  assert.equal(limitedBody.code, "AUTH_EMAIL_RATE_LIMITED");
+  assert.equal(limitedBody.retryAfterSeconds, 90);
+  assert.doesNotMatch(limitedBody.error, /private provider/);
   browser = await chromium.launch({ headless: true, channel: "chrome" });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
@@ -84,21 +99,61 @@ try {
   await page
     .getByLabel("Confirm password", { exact: true })
     .fill("LocalFixturePassword123!");
+  let signupRequests = 0;
+  page.on("request", (r) => {
+    if (
+      r.url().endsWith("/api/auth") &&
+      r.method() === "POST" &&
+      r.postDataJSON()?.action === "signup"
+    )
+      signupRequests++;
+  });
+  testDb.limitNext("/auth/v1/signup", "over_email_send_rate_limit", 2);
+  await page.getByRole("button", { name: "Create account" }).click();
+  await page.getByRole("alert").filter({ hasText: "email service" }).waitFor();
+  assert.equal(
+    await page.getByRole("button", { name: "Create account" }).isDisabled(),
+    true,
+  );
+  await waitFor(
+    () => page.getByRole("button", { name: "Create account" }).isEnabled(),
+    "provider retry cooldown",
+  );
+  assert.equal(signupRequests, 1, "The UI must not automatically retry signup");
   await page.getByRole("button", { name: "Create account" }).click();
   await page
     .getByRole("status")
     .filter({ hasText: "Check your email" })
     .waitFor();
   await page
-    .getByText("Confirm your email or resend a link", { exact: true })
-    .click();
-  await page.getByLabel("Email", { exact: true }).fill("phase1@example.test");
+    .getByRole("heading", { name: "Verify your email", exact: true })
+    .waitFor();
+  assert.equal(
+    await page.getByLabel("Email", { exact: true }).inputValue(),
+    "phase1@example.test",
+  );
+  assert.equal(
+    await page
+      .getByRole("button", { name: "Resend code", exact: true })
+      .isDisabled(),
+    true,
+  );
+  assert.equal(
+    await page
+      .getByRole("button", { name: "Verify email", exact: true })
+      .isEnabled(),
+    true,
+  );
+  await page.getByLabel("Confirmation code").fill("000000");
+  await page.getByRole("button", { name: "Verify email", exact: true }).click();
+  await page.getByRole("alert").waitFor();
+  assert.ok(page.url().endsWith("/signup"));
   await page.getByLabel("Confirmation code").fill("123456");
-  await page
-    .getByRole("button", { name: "Confirm email", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Verify email", exact: true }).click();
   await page.waitForURL("**/dashboard");
-  await page.getByRole("link", { name: "Complete your profile" }).click();
+  await page
+    .getByRole("link", { name: "Complete your profile", exact: true })
+    .click();
   await page.waitForURL("**/onboarding");
   await page.getByRole("button", { name: "Continue", exact: false }).click();
   await page.getByRole("button", { name: "Run demo identity check" }).click();
@@ -120,6 +175,7 @@ try {
   await page.waitForURL("**/dashboard");
   await page.getByRole("heading", { name: "Welcome, Alex." }).waitFor();
   await page
+    .getByRole("navigation", { name: "Workspace" })
     .getByRole("link", { name: "Discover matches", exact: false })
     .click();
   await page.getByRole("heading", { name: "2 relevant matches" }).waitFor();
@@ -132,6 +188,7 @@ try {
     .click();
   await page.getByRole("button", { name: "Saved ✓" }).waitFor();
   await page
+    .getByRole("navigation", { name: "Workspace" })
     .getByRole("link", { name: "Profile & goals", exact: false })
     .click();
   await page.getByText("Add another goal", { exact: true }).click();
@@ -157,6 +214,7 @@ try {
     .filter({ hasText: "Saved successfully" })
     .waitFor();
   await page
+    .getByRole("navigation", { name: "Workspace" })
     .getByRole("link", { name: "Discover matches", exact: false })
     .click();
   await page.getByRole("heading", { name: "4 relevant matches" }).waitFor();
@@ -189,7 +247,10 @@ try {
     .getByRole("status")
     .filter({ hasText: "Saved successfully" })
     .waitFor();
-  await page.getByRole("link", { name: "My pipeline" }).click();
+  await page
+    .getByRole("navigation", { name: "Workspace" })
+    .getByRole("link", { name: "My pipeline" })
+    .click();
   await page.getByLabel("Stage", { exact: true }).selectOption("SENT");
   await page
     .getByRole("checkbox", { name: "I am manually recording", exact: false })
@@ -206,6 +267,7 @@ try {
     .filter({ hasText: "Saved successfully" })
     .waitFor();
   await page
+    .getByRole("navigation", { name: "Workspace" })
     .getByRole("link", { name: "Discover matches", exact: false })
     .click();
   await page.getByRole("heading", { name: "0 relevant matches" }).waitFor();

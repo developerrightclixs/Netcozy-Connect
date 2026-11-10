@@ -9,12 +9,15 @@ import { ProfileGoals } from "./workspace-profile";
 import { Matches, Outreach } from "./workspace-matches";
 import { Pipeline, Settings } from "./workspace-settings";
 import { Admin } from "./workspace-admin";
+import { PropertyWorkspace } from "./property-workspace";
+import { Brand, NavIcon } from "./brand";
 const nav = [
   ["dashboard", "Overview", "◈"],
   ["onboarding", "Profile & goals", "◎"],
   ["matches", "Discover matches", "✧"],
   ["outreach", "Outreach drafts", "↗"],
   ["pipeline", "My pipeline", "▤"],
+  ["properties", "Properties & forms", "⌂"],
   ["settings", "Privacy & settings", "⚙"],
 ];
 export function Workspace({ section }: { section: string }) {
@@ -97,28 +100,24 @@ export function Workspace({ section }: { section: string }) {
         Skip to content
       </a>
       <aside className="sidebar">
-        <Link className="brand" href="/dashboard">
-          n
-          <span>
-            netcozy<span className="brand-light"> connect</span>
-          </span>
-        </Link>
+        <Brand />
         <p className="nav-label">YOUR WORKSPACE</p>
         <nav aria-label="Workspace">
-          {nav.map(([path, label, icon]) => (
+          {nav.map(([path, label]) => (
             <Link
               key={path}
               href={"/" + path}
               aria-current={section === path ? "page" : undefined}
               className={section === path ? "active" : ""}
             >
-              <span>{icon}</span>
+              <NavIcon name={path} />
               {label}
             </Link>
           ))}
           {data && isAdmin(data.roles) && (
             <Link href="/admin" className={section === "admin" ? "active" : ""}>
-              <span>✧</span>Administration
+              <NavIcon name="admin" />
+              Administration
             </Link>
           )}
         </nav>
@@ -172,7 +171,11 @@ export function Workspace({ section }: { section: string }) {
                   : "A focused space for your next meaningful connection."}
               </p>
             </div>
-            <span className="pill">SHARED CORE · PREVIEW</span>
+            <span className="pill">
+              {section === "properties"
+                ? "REAL ESTATE · PREVIEW"
+                : "WORKSPACE · PREVIEW"}
+            </span>
           </div>
           {error && (
             <div className="notice error" role="alert">
@@ -213,6 +216,8 @@ export function Workspace({ section }: { section: string }) {
                 <Outreach data={data} run={run} />
               ) : section === "pipeline" ? (
                 <Pipeline data={data} run={run} />
+              ) : section === "properties" ? (
+                <PropertyWorkspace />
               ) : section === "settings" ? (
                 <Settings data={data} run={run} />
               ) : (

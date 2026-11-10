@@ -1,25 +1,12 @@
 ﻿// Test-only Supabase HTTP contract adapter. Auth responses are simulated; SQL and RLS are real PGlite PostgreSQL.
 import http from "node:http";
-import fs from "node:fs/promises";
 import { randomUUID } from "node:crypto";
-import { PGlite } from "@electric-sql/pglite";
+import { database } from "./database.mjs";
 export async function fixture(port = 4874) {
-  const db = new PGlite();
-  await db.exec(
-    `create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to authenticated;grant execute on function auth.uid() to authenticated;`,
-  );
-  for (const file of [
-    "202611100001_shared_core.sql",
-    "202611100002_demo_directory.sql",
-  ])
-    await db.exec(
-      (
-        await fs.readFile(
-          new URL("../../supabase/migrations/" + file, import.meta.url),
-          "utf8",
-        )
-      ).replace(/^\uFEFF/, ""),
-    );
+  const db = await database();
+  const stored = new Map(),
+    signedTokens = new Map();
+  const rateLimits = new Map();
   const users = new Map(),
     access = new Map(),
     refresh = new Map();
@@ -38,17 +25,45 @@ export async function fixture(port = 4874) {
   };
   const server = http.createServer((req, res) => {
     void queued(async () => {
-      const send = (status, value) => {
-        res.writeHead(status, { "Content-Type": "application/json" });
+      const send = (status, value, headers = {}) => {
+        res.writeHead(status, {
+          "Content-Type": "application/json",
+          ...headers,
+        });
         res.end(JSON.stringify(value));
       };
       try {
         const url = new URL(req.url, "http://localhost");
-        let raw = "";
-        for await (const chunk of req) raw += chunk;
-        const data = raw ? JSON.parse(raw) : {};
+        const chunks = [];
+        for await (const chunk of req) chunks.push(chunk);
+        const bytes = Buffer.concat(chunks);
+        const binaryUpload = url.pathname.startsWith(
+          "/storage/v1/object/netcozy-property-evidence/",
+        );
+        const data =
+          bytes.length && !binaryUpload ? JSON.parse(bytes.toString()) : {};
+        if (
+          req.method === "GET" &&
+          url.pathname.startsWith("/storage/v1/object/sign/")
+        ) {
+          const key = signedTokens.get(url.searchParams.get("token"));
+          const item = stored.get(key);
+          if (!item) return send(404, {});
+          res.writeHead(200, { "Content-Type": item.mime });
+          res.end(item.bytes);
+          return;
+        }
         if (req.headers.apikey !== "sb_publishable_test_fixture")
           return send(401, { error: "Invalid fixture key" });
+        const limited = rateLimits.get(url.pathname);
+        if (limited) {
+          rateLimits.delete(url.pathname);
+          return send(
+            429,
+            { code: limited.code, message: "private provider error detail" },
+            { "Retry-After": String(limited.seconds) },
+          );
+        }
         const user = access.get(
           req.headers.authorization?.replace("Bearer ", ""),
         );
@@ -68,7 +83,8 @@ export async function fixture(port = 4874) {
         }
         if (url.pathname === "/auth/v1/verify") {
           const pending = users.get(data.email);
-          if (!pending || data.token !== "123456") return send(400, {});
+          if (!pending || data.type !== "email" || data.token !== "123456")
+            return send(400, { code: "otp_expired" });
           pending.email_confirmed_at = new Date().toISOString();
           const { password: discard, ...safe } = pending;
           void discard;
@@ -103,12 +119,74 @@ export async function fixture(port = 4874) {
           user.id,
         ]);
         await db.exec("set role authenticated");
+        if (binaryUpload && req.method === "POST") {
+          const key = decodeURIComponent(
+            url.pathname.slice(
+              "/storage/v1/object/netcozy-property-evidence/".length,
+            ),
+          );
+          await db.query(
+            "insert into storage.objects(bucket_id,name,owner_id,metadata) values($1,$2,$3,$4)",
+            [
+              "netcozy-property-evidence",
+              key,
+              user.id,
+              JSON.stringify({
+                mimetype: req.headers["content-type"],
+                size: bytes.length,
+              }),
+            ],
+          );
+          stored.set(key, { bytes, mime: req.headers["content-type"] });
+          return send(200, { Key: key });
+        }
+        if (
+          url.pathname.startsWith(
+            "/storage/v1/object/sign/netcozy-property-evidence/",
+          ) &&
+          req.method === "POST"
+        ) {
+          const key = decodeURIComponent(
+            url.pathname.slice(
+              "/storage/v1/object/sign/netcozy-property-evidence/".length,
+            ),
+          );
+          const rows = await db.query(
+            "select id from storage.objects where bucket_id=$1 and name=$2",
+            ["netcozy-property-evidence", key],
+          );
+          if (!rows.rows.length) return send(403, {});
+          const token = randomUUID();
+          signedTokens.set(token, key);
+          return send(200, {
+            signedURL:
+              "/object/sign/netcozy-property-evidence/" +
+              key +
+              "?token=" +
+              token,
+          });
+        }
         if (url.pathname.startsWith("/rest/v1/rpc/")) {
           const name = url.pathname.split("/").at(-1);
           const functions = {
             nc_demo_identity: [],
             nc_complete_onboarding: ["input"],
             nc_assign_role: ["subject", "wanted_role", "remove_role"],
+            nc_import_properties: ["meta", "records"],
+            nc_save_property_contact: ["input"],
+            nc_record_property_permission: ["input"],
+            nc_log_property_outreach: ["input"],
+            nc_demo_developers: [],
+            nc_create_partner_form: ["input"],
+            nc_edit_partner_form: ["input"],
+            nc_submit_partner_form: ["input"],
+            nc_review_partner_form: ["input"],
+            nc_simulate_partner_delivery: ["input"],
+            nc_demo_property_evidence: ["input"],
+            nc_register_property_evidence: ["input"],
+            nc_complete_property_evidence: ["input"],
+            nc_request_claim_review: ["input"],
+            nc_review_property_claim: ["input"],
           };
           if (!Object.hasOwn(functions, name)) return send(404, {});
           const keys = functions[name];
@@ -139,6 +217,15 @@ export async function fixture(port = 4874) {
           where = [];
         for (const [key, value] of url.searchParams) {
           if (!columns.includes(key)) continue;
+          if (value === "is.null") {
+            where.push('"' + key + '" is null');
+            continue;
+          }
+          if (value.startsWith("ilike.")) {
+            params.push(value.slice(6));
+            where.push('"' + key + '" ilike $' + params.length);
+            continue;
+          }
           if (!value.startsWith("eq."))
             throw new Error("Unsupported fixture operator");
           const type = info.find((c) => c.column_name === key).data_type;
@@ -176,6 +263,11 @@ export async function fixture(port = 4874) {
           if (limit) {
             if (!/^\d+$/.test(limit)) throw new Error("Invalid limit");
             sql += " limit " + limit;
+          }
+          const offset = url.searchParams.get("offset");
+          if (offset) {
+            if (!/^\d+$/.test(offset)) throw new Error("Invalid offset");
+            sql += " offset " + offset;
           }
         } else if (req.method === "POST") {
           const keys = Object.keys(data);
@@ -221,6 +313,9 @@ export async function fixture(port = 4874) {
   return {
     db,
     server,
+    limitNext(path, code, seconds = 2) {
+      rateLimits.set(path, { code, seconds });
+    },
     async promote(email) {
       await queued(async () => {
         await db.exec("reset role");

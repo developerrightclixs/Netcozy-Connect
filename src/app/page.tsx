@@ -1,14 +1,10 @@
 import Link from "next/link";
+import { Brand } from "@/components/brand";
 export default function Home() {
   return (
     <>
       <header className="landing-nav">
-        <Link className="brand" href="/">
-          n
-          <span>
-            netcozy<span className="brand-light"> connect</span>
-          </span>
-        </Link>
+        <Brand href="/" />
         <div className="row">
           <Link href="/login">Sign in</Link>
           <Link className="button" href="/signup">

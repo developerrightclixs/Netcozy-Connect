@@ -2,6 +2,8 @@
 
 ## Approval and scope
 
+Current checkpoint (2026-11-10): the user resumed approved Phase 2 and supplied `Netcozy Connect.html` as the visual reference. Phase 2 property/forms code and local verification are implemented; hosted acceptance remains external. Earlier pause notes below describe the starting checkpoint, not the current status. Stop before Phase 3. The latest delivery section records verification and remaining dependencies.
+
 Phase 1 was explicitly approved by the user. Complete the shared core and stop before Phase 2. Supabase replaces the original Prisma recommendation. Preserve the navy/teal design direction and existing foundation checks.
 
 ## Existing state
@@ -68,3 +70,84 @@ Verification: 31 tests passed, TypeScript passed, production build passed. A com
 ## Typography update within Phase 1
 
 User selected Google Fonts Syne and Figtree. Applied Syne to headings, brand and prominent numeric scores; Figtree to body text, navigation and inherited controls. Added Google Fonts stylesheet import with display=swap, limited requested weights, preconnect hints and system fallback stacks. External fonts load in the browser; application builds do not require downloading font binaries. Existing colors, layout, workflows and phase boundaries are preserved. Google font hosts are blocked by EACCES in the agent environment, so live font download must be checked on the deployed site. Lint and production build (including TypeScript) passed.
+
+## Phase 1 authentication rate-limit handling
+
+User reported the generic HTTP 429 message. Confirmed the Supabase adapter discarded provider error codes and Retry-After. Added allowlisted classification of email limits versus general authentication limits, preserved valid upstream retry guidance in the API response/header, and kept provider payload details redacted. The form prevents duplicate in-flight submissions, honors retry cooldowns without automatic retries, and shares a 60-second email cooldown after accepted signup/resend. An email-specific limit does not disable existing-code verification or sign-in. When no retry header exists, the UI's default cooldown is not presented as proof that the provider quota has reset. Non-authentication API rate limits retain their generic request wording.
+
+Verification: 36 tests passed; production build/TypeScript and zero-warning lint/format checks passed. Browser regression passed, including HTTP 429 classification/Retry-After preservation, visible email cooldown, disabled duplicate submits, no automatic signup retry and the full shared-core workflow. No provider limits, Supabase settings, migrations or future-phase features changed. The actual deployed request/error subtype is not confirmed without the deployment details or Supabase Auth log code.
+
+## Phase 2 - explicitly approved
+
+The user approved Phase 2 after reviewing its real-estate/forms scope. Preserve all Phase 1 workflows, Supabase RLS/session controls, rate-limit handling, Syne/Figtree typography, navy/teal styling and Vercel deployment behavior. Stop before Phase 3. Earlier hosted acceptance and email-provider setup remain external dependencies; this approval does not claim those checks passed.
+
+### Phase 2 implementation order and acceptance
+
+1. Add an additive versioned real-estate schema: owned properties/contacts, source/license provenance, bounded transactional import runs and per-record deduplication, claim/evidence review, developer preferences, partner templates/forms/reviews and immutable delivery/outreach history.
+2. Provide a 40-record clearly fictitious vacant-lot CSV. Reimporting the same data must create no duplicate properties and must preserve reviewed evidence when nothing changed. Changed property facts invalidate relevant claim/form approvals.
+3. Add property create/edit/search/detail UI, CSV upload/preview/import history, private property evidence uploads and claim review with honest UNVERIFIED defaults.
+4. Add owner contacts/permission evidence/manual outreach logs and deterministic developer matching with explanations; no scraper or automated cold send.
+5. Add per-partner template mapping/prefill, editable draft forms, submission for independent administrator review, version-bound approval and immutable simulated-send events. Database/server guards must reject sending before approval and stale/edited approvals, including direct API attempts.
+6. Use typed BLOCKED licensed-feed/live-delivery adapters and an explicitly DEMO partner delivery path while contracts, authorized domains and provider credentials are unavailable. Simulation must never report live delivery.
+7. Verify domain validation/scoring, actual SQL/RLS/approval gates, the Phase 2 browser journey and preserved Phase 1 flows; run lint, typecheck, formatting and build. Update setup/README/checklists with actual results and external blockers.
+
+### Phase 2 decisions
+
+- Supabase-native, personal-owner scoped; ADMIN/SUPER_ADMIN review authority is explicit. A second administrator reviews property claims/forms; an owner cannot approve their own submission.
+- Property document bucket is private with session-scoped upload/read policies, strict size/type/magic checks and short-lived signed download URLs. No public document URLs or ID-photo uploads. Scanning is marked unavailable rather than claimed.
+- CSV imports are bounded and transactional within a server request, with persisted source/license, row dispositions, status and timestamps; no unimplemented background worker is claimed.
+- Source/claim values remain unverified until an authorized review backed by evidence. Demo evidence cannot verify a real property. Property edits and partner preference changes invalidate pending approval snapshots.
+- No production migrations or external messages are authorized by implementation. Hosted setup instructions will be concrete; the publishable key cannot apply schema/storage policies.
+
+## Pause checkpoint - user requested stop
+
+Phase 2 work is paused at the user's explicit request; resume this approved phase when the user returns. Do not start Phase 3 or repeat Phase 1 implementation.
+
+Completed in this Phase 2 session:
+- Inspected the existing shared core and updated the Phase 2 plan and approval boundary.
+- Added draft migrations 202611100003_real_estate.sql, 202611100004_property_workflows.sql and 202611100005_property_evidence.sql.
+- Verified all five migrations apply successfully to isolated PGlite PostgreSQL using tests/fixtures/database.mjs. This is a schema-application smoke check only, not full behavior/security verification.
+- Added initial real-estate schemas/types/developer scoring, CSV parser/import validation, evidence file validation, BLOCKED property-feed interface, DEMO partner-delivery interface and the 40-record fictitious CSV under public/examples.
+
+Unfinished / must verify before completion:
+- The new API routes, property/evidence Storage integration, UI/screens and navigation have not been implemented yet.
+- The Phase 2 approval/RLS/import behavior tests and browser workflow have not been written/run. Existing Phase 1 tests have not been rerun after these draft additions.
+- Format/lint/typecheck/build of Phase 2 additions are pending. Treat all new Phase 2 files as work in progress.
+- Review the partner-template JSON mapping guard and all claim/form approval transitions with direct database negative tests. Review locking order in simulated delivery (form/property/partner) to avoid deadlocks under concurrent changes.
+- Wire tests/fixtures/database.mjs into the HTTP fixture, add Phase 2 RPC and Storage contracts, and preserve the existing Phase 1 browser test.
+- Document ordered hosted migrations/private bucket setup after implementation; no remote Supabase schema/storage changes or external sends have occurred.
+
+Next action on resume: inspect these draft files and implement/test Phase 2 database behavior before wiring the APIs and UI. Keep existing Syne/Figtree typography, authentication, consent and rate-limit handling unchanged. Do not declare Phase 2 complete or start Phase 3.
+
+## Signup authentication diagnostics
+User reported the generic authentication failure during signup. Replaced discarded Auth provider errors with allowlisted safe messages for SMTP recipient restrictions, disabled email/signup, password policy, CAPTCHA, credentials and confirmation errors. Unknown provider payloads remain redacted; upstream server failures return 503. No hosted settings or schema changed. Verified 38 tests and TypeScript; live signup cause remains unconfirmed until deployed response or Supabase Auth logs are available.
+
+## Phase 2 delivery checkpoint - resumed and locally verified
+
+The user resumed Phase 2 and then supplied the local Netcozy Connect.html design reference after the Claude artifact URL returned a security verification page. Inspected its rendered dashboard/marketplace and design tokens. Applied the navy #14213D sidebar, teal #0E7F84 actions/#19A7AD accents, #F7F9FC background, white rounded cards, line icons, compact filters, property gallery and dashboard hierarchy. Preserved the selected Syne/Figtree typography. Adapted landing/auth surfaces and existing shared-core screens without adding the reference's future modules or fabricated live metrics.
+
+Implemented /properties navigation, property create/edit/search/pagination/details, CSV upload/preview/import history with per-run dispositions, private evidence upload/download, independent claim review, contacts/permission withdrawal/manual outreach history, developer preferences and explained deterministic matches, partner template mapping/versioning, editable forms, independent version-bound review and immutable DEMO simulation receipts. Server routes use the signed-in Supabase session and same-origin mutation checks. Uploads bound the multipart body before parsing, validate size/MIME/magic bytes, record SHA-256, forbid overwrite and use 60-second signed download URLs. Malware scanning remains explicitly unavailable. No ID-photo workflow exists.
+
+Corrected draft SQL defects found by real behavior tests: ambiguous import disposition/outreach channel variables, null template mapping values, address verification including region/postal facts, required hashes for uploaded evidence, and simulated delivery's locking order (property -> partner -> form). Unchanged reimports preserve reviewed evidence; changed facts or partner preferences invalidate unsent approvals. Real records cannot use demo evidence or the demo delivery path even after independent approval. Licensed-feed/live-delivery adapters remain typed BLOCKED. Review/outreach/permission/delivery histories have no user update/delete grants; shared-core immutable audit records Phase 2 mutations.
+
+Verification on the delivered implementation:
+- npm.cmd test: 53 passed, 0 failed. Includes real disposable PGlite PostgreSQL migration/RLS/import/review/consent/Storage-policy tests, deterministic scoring and provider/input checks.
+- npm.cmd run lint: passed, zero warnings.
+- npm.cmd run typecheck: passed; final production build also passed TypeScript after the last API updates.
+- npm.cmd run format:check: passed.
+- npm.cmd run build: passed, including both new API routes.
+- npm.cmd run test:browser: Phase 1 regression passed against the fixture applying all five migrations.
+- npm.cmd run test:phase2-browser: passed through import/preview/reimport, per-run row dispositions, search/pagination, private PDF upload/signed download, two-user isolation, independent claim/form reviews, form-edit invalidation, direct API bypass rejection, contact permission/manual logging/withdrawal, DEMO receipt and mobile overflow checks.
+- Inspected desktop dashboard, property gallery and desktop/mobile form screenshots against the supplied HTML. Temporary reference files/screenshots are ignored under .npm-cache. External fonts still require normal browser connectivity; no live font-download acceptance is claimed.
+
+These browser checks use actual Next.js routes and SQL/RLS with explicitly simulated Supabase Auth/Storage HTTP contracts. They do not verify hosted email, hosted Storage metadata/policies, signed-URL expiry enforcement or concurrent hosted transactions. SUPABASE_SETUP.md now documents all five ordered migrations, private bucket policies, independently applied draft reconciliation and the two-account hosted acceptance sequence. README, checklist and Vercel instructions reflect the approved Phase 2 scope.
+
+No remote schema, bucket, Auth settings, deployment or external message was changed. Owner-authorized development migration application (003-005 if Phase 1 is already installed), actual email confirmation/sign-in, private Storage and two-account hosted acceptance remain open. Phase 2 code/local verification are delivered; Phase 2 is not declared fully accepted while those hosted checks remain pending. No Phase 3 work was started.
+
+## Email verification code update - 2026-11-11
+
+User reported successful application of Phase 2 migrations 003-005 (user confirmation, not independently queried); hosted end-to-end acceptance remains pending. User then requested emailed verification codes instead of confirmation links. Signup now opens a focused code form with the submitted email prefilled and hides the password/signup form after acceptance. Login retains a code/resend option for unconfirmed accounts. Code input supports one-time-code autofill and 6-10 numeric digits. Successful verification uses Supabase's email OTP type and server-held HTTP-only cookies. Wrong/expired codes retain the form with a safe error; resend/duplicate-submit/provider cooldown behavior is preserved, and an email-only cooldown does not block code verification. Supabase still generates/expires/verifies codes; no custom OTP storage or cryptography was added.
+
+Added supabase/templates/confirmation.html and updated setup/deployment/README instructions for the required code-only Confirm signup email template using {{ .Token }}. The owner must save that template in Supabase and deploy the app changes; no remote email template/settings or schema was changed by this work. Existing callback route remains for previously issued links; the new email template contains no links.
+
+Verification: production build including TypeScript passed; zero-warning lint and formatting passed; 53 automated tests passed. Updated Phase 1 browser regression passed, covering automatic code step, prefilled email, resend cooldown with verification enabled, incorrect-code rejection and successful verification/dashboard navigation. Phase 2 browser regression also passed. Auth/email delivery remains simulated in local tests; actual code delivery and hosted entry must be exercised after the template is saved. No further phase work was started.

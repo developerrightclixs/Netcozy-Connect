@@ -36,13 +36,13 @@ export async function POST(request: NextRequest) {
     if (body.action === "verify") {
       const input = z
         .object({
-          email: z.string().email(),
+          email: z.string().trim().email().max(254),
           token: z.string().regex(/^[0-9]{6,10}$/),
         })
         .parse(body.data);
       const tokens = await client.request<Tokens>("/auth/v1/verify", "POST", {
         ...input,
-        type: "signup",
+        type: "email",
       });
       response = NextResponse.json({ ok: true });
       setSession(response, tokens);
@@ -60,7 +60,8 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json({
         ok: true,
-        message: "If eligible, a confirmation email has been sent.",
+        message:
+          "If eligible, a new verification code has been emailed. Enter the newest code below.",
       });
     }
     const input = (body.action === "signup" ? authSchema : loginSchema).parse(
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         ok: true,
         message:
-          "Check your email for the confirmation link. Then sign in, or enter the code if your email template includes one.",
+          "Check your email for your verification code. Enter it below to confirm your email and sign in.",
       });
     }
     const tokens = await client.request<Tokens>(
@@ -95,9 +96,13 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     const failure =
       e instanceof ServiceError
-        ? { status: e.status, code: "AUTH_PROVIDER", error: e.message }
+        ? {
+            status: e.status,
+            code: e.code ?? "AUTH_PROVIDER",
+            error: e.message,
+          }
         : authFailure(e);
-    if (failure.status >= 500)
+    if (failure.status >= 500 || failure.status === 429)
       console.error(
         JSON.stringify({
           event: "authentication_failed",
@@ -105,9 +110,23 @@ export async function POST(request: NextRequest) {
           errorType: e instanceof Error ? e.name : "Unknown",
         }),
       );
+    const retryAfterSeconds =
+      e instanceof ServiceError ? e.retryAfterSeconds : undefined;
     return NextResponse.json(
-      { error: failure.error, code: failure.code },
-      { status: failure.status, headers: { "Cache-Control": "no-store" } },
+      {
+        error: failure.error,
+        code: failure.code,
+        ...(retryAfterSeconds ? { retryAfterSeconds } : {}),
+      },
+      {
+        status: failure.status,
+        headers: {
+          "Cache-Control": "no-store",
+          ...(retryAfterSeconds
+            ? { "Retry-After": String(retryAfterSeconds) }
+            : {}),
+        },
+      },
     );
   }
 }
