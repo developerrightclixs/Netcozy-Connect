@@ -1,7 +1,8 @@
+import { WorkspaceLoader } from "@/components/workspace-loader";
 export default function Loading() {
   return (
-    <main className="loading-screen" role="status">
-      Loading your workspace…
+    <main>
+      <WorkspaceLoader fullScreen />
     </main>
   );
 }

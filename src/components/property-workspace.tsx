@@ -14,6 +14,7 @@ import {
 } from "./property-partners";
 import { field } from "./ui";
 import { NavIcon } from "./brand";
+import { WorkspaceLoader } from "./workspace-loader";
 export type PropertyData = RealEstateData & {
   selectedProperty: Property | null;
 };
@@ -166,7 +167,7 @@ export function PropertyWorkspace() {
         </div>
       )}
       {!data ? (
-        <p role="status">Loading property workspace…</p>
+        <WorkspaceLoader property />
       ) : (
         <fieldset className="workspace-fields" disabled={busy} aria-busy={busy}>
           {tab === "properties" && (

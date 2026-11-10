@@ -11,6 +11,7 @@ import { Pipeline, Settings } from "./workspace-settings";
 import { Admin } from "./workspace-admin";
 import { PropertyWorkspace } from "./property-workspace";
 import { Brand, NavIcon } from "./brand";
+import { WorkspaceLoader } from "./workspace-loader";
 const nav = [
   ["dashboard", "Overview", "◈"],
   ["onboarding", "Profile & goals", "◎"],
@@ -195,11 +196,7 @@ export function Workspace({ section }: { section: string }) {
               {message}
             </div>
           )}
-          {!data && !error && (
-            <div className="panel skeleton" role="status">
-              Loading your workspace…
-            </div>
-          )}
+          {!data && !error && <WorkspaceLoader />}
           {data && (
             <fieldset
               className="workspace-fields"
