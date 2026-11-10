@@ -1,4 +1,4 @@
-# Supabase development setup for Phases 1 and 2
+# Supabase development setup for Phases 1-3
 
 The URL and publishable key in .env support normal Auth/data access. They intentionally cannot create tables or assign initial administrators. Use the Supabase project's SQL Editor as the authorized project operator, or your existing authorized Supabase CLI migration workflow. Do not paste credentials into chat or use a production project for development testing.
 
@@ -25,8 +25,13 @@ In the **development** project's SQL Editor run the exact contents of:
 3. `supabase/migrations/202611100003_real_estate.sql`
 4. `supabase/migrations/202611100004_property_workflows.sql`
 5. `supabase/migrations/202611100005_property_evidence.sql`
+6. `supabase/migrations/202611110006_marketplace.sql`
+7. `supabase/migrations/202611110007_module_workflows.sql`
+8. `supabase/migrations/202611110008_event_ticketing.sql`
 
 Each file is transactional. Review errors and stop on failure. No rows should be copied from a production project for testing. If you use an established Supabase CLI workflow, apply the files through its migration tooling and keep that migration history authoritative; do not run the same files independently in both places.
+
+The user reported successful application of 003-005. For that existing project, review/apply only the NEW Phase 3 files 006, 007, 008 in order. Do not rerun earlier files or edit an applied migration. Each Phase 3 file checks prerequisite objects before creating dependent functions. See [PHASE3_SETUP.md](PHASE3_SETUP.md) for role mapping and hosted acceptance. Earlier hosted functionality remains unverified until exercised with actual accounts.
 
 If Phase 1 migrations are already applied, apply only 003–005 after reviewing migration history. The three Phase 2 files were drafts at the pause checkpoint and have since been corrected during local SQL verification. No remote application of them has been performed by this agent. If you independently applied an earlier draft, stop and reconcile its differences through a new additive migration; do not rerun or edit an applied migration.
 

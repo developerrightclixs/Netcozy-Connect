@@ -14,6 +14,9 @@ export default async function WorkspacePage({
       "outreach",
       "pipeline",
       "properties",
+      "talent",
+      "marketplace",
+      "events",
       "settings",
       "admin",
     ].includes(section)

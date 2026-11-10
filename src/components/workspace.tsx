@@ -12,6 +12,7 @@ import { Admin } from "./workspace-admin";
 import { PropertyWorkspace } from "./property-workspace";
 import { Brand, NavIcon } from "./brand";
 import { WorkspaceLoader } from "./workspace-loader";
+import { ModuleWorkspace } from "./module-workspace";
 const nav = [
   ["dashboard", "Overview", "◈"],
   ["onboarding", "Profile & goals", "◎"],
@@ -19,6 +20,9 @@ const nav = [
   ["outreach", "Outreach drafts", "↗"],
   ["pipeline", "My pipeline", "▤"],
   ["properties", "Properties & forms", "⌂"],
+  ["talent", "Talent & testers", ""],
+  ["marketplace", "Yachts & vehicles", ""],
+  ["events", "Events & tickets", ""],
   ["settings", "Privacy & settings", "⚙"],
 ];
 export function Workspace({ section }: { section: string }) {
@@ -215,6 +219,8 @@ export function Workspace({ section }: { section: string }) {
                 <Pipeline data={data} run={run} />
               ) : section === "properties" ? (
                 <PropertyWorkspace />
+              ) : ["talent", "marketplace", "events"].includes(section) ? (
+                <ModuleWorkspace key={section} section={section} />
               ) : section === "settings" ? (
                 <Settings data={data} run={run} />
               ) : (

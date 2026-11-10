@@ -32,6 +32,11 @@ export function NavIcon({ name }: { name: string }) {
     outreach: "M21 3 9 15M21 3l-7 18-5-6-6-5z",
     pipeline: "M3 8h18v12H3zM7 8V4h10v4M3 13h18M10 13v3h4v-3",
     properties: "M4 21V3h10v18M14 9h6v12M2 21h20M8 7h2M8 11h2M8 15h2",
+    talent:
+      "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 21v-2a4 4 0 0 0-3-4",
+    marketplace: "M3 18h18l-3 3H6zM12 3v13H5zM14 6l5 10h-5",
+    vehicles: "M3 16v-5l3-6h12l3 6v5M3 11h18M6 16v3M18 16v3M7 14h1M16 14h1",
+    events: "M4 5h16v16H4zM8 2v6M16 2v6M4 10h16",
     settings:
       "M4 4v6M4 14v6M12 4v10M12 18v2M20 4v2M20 10v10M1 10h6M9 14h6M17 6h6",
     admin: "M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM9 12l2 2 4-4",

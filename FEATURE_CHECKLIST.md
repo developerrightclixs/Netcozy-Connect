@@ -57,12 +57,22 @@ Phase 1 implementation is prepared and locally exercised; it is not declared ful
 - [ ] Exercise actual hosted Auth/email, Storage, two-user RLS and independent approval workflow.
 - [x] Final local checks: 53/53 automated tests; lint, TypeScript, formatting and production build passed. Phase 1 and expanded Phase 2 browser regressions passed.
 
-## Phase 3 - NOT APPROVED / not started
+## Phase 3 - APPROVED / implemented and locally verified; hosted acceptance pending
 
-- [ ] Talent/tester recruitment and opt-in acquisition.
-- [ ] Yachts/aviation agent marketplace.
-- [ ] Vehicle dealer/broker marketplace.
-- [ ] Events, checkout and ticketing.
+- [x] Additive 006-008 migrations, explicit roles, RLS and immutable workflow/review history.
+- [x] Talent/tester/commission profiles, append-only publication opt-in/withdrawal, current matching consent and deterministic explained matches.
+- [x] Recruitment opportunities, independent publication review, private applications, shortlist/decline/withdraw states and revision checks.
+- [x] Yacht/aviation listings, opted-in AGENT assignment/acceptance for each revision and private owner/agent inquiries.
+- [x] Vehicle dealer/broker listings with SELLER/AGENT roles, browsing, filters and private structured inquiries.
+- [x] ORGANIZER events, registration deadlines, locked capacity, idempotent order snapshots, free/DEMO checkout and private ticket references.
+- [x] Cancellation releases capacity; check-in is organizer controlled, single-use and bounded by event time for real events.
+- [x] Live paid checkout explicitly BLOCKED; no card collection, live payment/webhook or automatic external messages.
+- [x] Authenticated demo catalog without fake Auth accounts, contacts, identity/inventory verification claims or actual admission.
+- [x] Domain-specific input validation, navy/teal responsive UI, role/review queues and domain navigation.
+- [x] Final local verification: 66/66 automated tests, all three browser regressions, lint, TypeScript, formatting, production build and desktop/mobile visual checks passed.
+- [ ] Apply 006, then 007, then 008 to an authorized development project; do not rerun 001-005.
+- [ ] Verify hosted roles/RLS, concurrent capacity/replay, agent deactivation, consent withdrawal and actual Auth/email.
+- [ ] Real payment provider setup and verified webhook/settlement/refund integration remain external; live checkout is not claimed implemented.
 
 ## Phase 4 - NOT APPROVED / not started
 

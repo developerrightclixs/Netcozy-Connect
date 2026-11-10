@@ -187,6 +187,17 @@ export async function fixture(port = 4874) {
             nc_complete_property_evidence: ["input"],
             nc_request_claim_review: ["input"],
             nc_review_property_claim: ["input"],
+            nc_save_market_listing: ["input"],
+            nc_save_market_agent: ["input"],
+            nc_market_listing_action: ["input"],
+            nc_save_talent_candidate: ["input"],
+            nc_apply_talent: ["input"],
+            nc_talent_application_action: ["input"],
+            nc_market_inquiry: ["input"],
+            nc_market_inquiry_action: ["input"],
+            nc_register_event: ["input"],
+            nc_cancel_event_order: ["input"],
+            nc_checkin_event_ticket: ["input"],
           };
           if (!Object.hasOwn(functions, name)) return send(404, {});
           const keys = functions[name];
@@ -217,6 +228,22 @@ export async function fixture(port = 4874) {
           where = [];
         for (const [key, value] of url.searchParams) {
           if (!columns.includes(key)) continue;
+          if (value.startsWith("in.(") && value.endsWith(")")) {
+            const items = value.slice(4, -1).split(",");
+            where.push(
+              '"' +
+                key +
+                '" in (' +
+                items
+                  .map((item) => {
+                    params.push(item);
+                    return "$" + params.length;
+                  })
+                  .join(",") +
+                ")",
+            );
+            continue;
+          }
           if (value === "is.null") {
             where.push('"' + key + '" is null');
             continue;
@@ -322,6 +349,19 @@ export async function fixture(port = 4874) {
         await db.query(
           "insert into nc_roles(user_id,role) values($1,'SUPER_ADMIN')",
           [users.get(email).id],
+        );
+      });
+    },
+    async grantRole(email, role) {
+      if (
+        !["RECRUITER", "SELLER", "AGENT", "ORGANIZER", "ADMIN"].includes(role)
+      )
+        throw new Error("Unsupported test role");
+      await queued(async () => {
+        await db.exec("reset role");
+        await db.query(
+          "insert into nc_roles(user_id,role) values($1,$2) on conflict do nothing",
+          [users.get(email).id, role],
         );
       });
     },

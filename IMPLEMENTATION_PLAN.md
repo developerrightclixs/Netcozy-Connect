@@ -2,7 +2,7 @@
 
 ## Approval and scope
 
-Current checkpoint (2026-11-10): the user resumed approved Phase 2 and supplied `Netcozy Connect.html` as the visual reference. Phase 2 property/forms code and local verification are implemented; hosted acceptance remains external. Earlier pause notes below describe the starting checkpoint, not the current status. Stop before Phase 3. The latest delivery section records verification and remaining dependencies.
+Current checkpoint (2026-11-11): Phase 3 is explicitly approved and in implementation/local verification. Phases 1-2, code-based signup confirmation and the branded loader are preserved. The user reported applying migrations 003-005; hosted acceptance remains open. Historical pause/phase boundaries below are superseded by the later approvals. Stop before Phase 4. The latest delivery section records verification and remaining dependencies.
 
 Phase 1 was explicitly approved by the user. Complete the shared core and stop before Phase 2. Supabase replaces the original Prisma recommendation. Preserve the navy/teal design direction and existing foundation checks.
 
@@ -155,3 +155,42 @@ Verification: production build including TypeScript passed; zero-warning lint an
 ## Branded workspace loading - 2026-11-11
 
 Replaced plain route/workspace/property loading messages with a shared navy/teal constellation loader: Netcozy monogram, floating connection icons, subtle orbit/connection animation, animated dots and decorative shimmer cards. No artificial progress or delays. Status text is accessible; decorative content is hidden from assistive technology, and reduced-motion disables animations. Verified production build/TypeScript, zero-warning lint and browser desktop/mobile previews, no mobile overflow and reduced-motion computed styles. Preview screenshots are ignored under .npm-cache. No authentication, data or phase-scope changes.
+
+## Phase 3 - explicitly approved 2026-11-11
+
+The user approved proceeding after the four-module scope was presented: talent/tester recruitment and opt-in acquisition, yachts/aviation with assigned agents, vehicle dealer/broker marketplace, and events/registration/checkout/ticketing. Implement in that order and stop before Phase 4. Preserve existing authentication/OTP, consent, private property evidence, approvals, Syne/Figtree, branded loader and HTML-reference styling. Earlier hosted acceptance remains open.
+
+Architecture/acceptance:
+- Add versioned migrations 006-008; do not change applied migrations 001-005 or perform remote changes.
+- Shared authenticated marketplace listings have module-specific validated facts, owner roles, revisions, independent content review and immutable history. Content approval never implies identity or inventory verification. Yacht/aviation publication requires an explicitly opted-in AGENT to accept assignment for the current revision. Global fictitious demos have no fabricated Auth accounts or real contact details.
+- Self-service talent profiles record append-only publication opt-in/withdrawal and disclose only submitted profile fields. Discoverability/matching/application guards also enforce current platform matching consent. Recruiter-owned roles, deterministic explained matching, applications and shortlist/decline/withdraw states are server/SQL controlled. No scraper, third-party prospect import, automated outreach or resume/ID-photo uploads.
+- Vehicle listings distinguish dealer/broker with appropriate SELLER/AGENT roles, public authenticated browsing and private structured in-app inquiries. Yacht/aviation inquiries are visible to the owner and current accepted agent. No external messages are sent.
+- Events use ORGANIZER roles, bounded registration, event-row locking for capacity, request-key idempotency, immutable order price snapshots, ticket references, cancellation and one-time organizer check-in. Free registration and explicitly DEMO simulated checkout are available; real paid checkout remains typed BLOCKED until a payment provider/credentials and verified webhook integration are configured. No payment details or payment-success claims are fabricated.
+- Add domain APIs/UI, role/review queues and demo samples. Test actual PostgreSQL/RLS, ownership, consent/revision/agent gates, private applications/inquiries, overbooking/replay/cancellation/check-in and blocked real checkout. Exercise Phase 3 browser journeys and rerun earlier regression checks, lint, TypeScript, formatting and build. Document actual checks and hosted/provider blockers.
+
+## Phase 3 delivery checkpoint - 2026-11-11
+
+Implemented approved Phase 3 modules and stopped before Phase 4. New additive migrations 202611110006_marketplace.sql, 202611110007_module_workflows.sql and 202611110008_event_ticketing.sql are locally reviewed/tested and have actionable prerequisite checks. Applied migrations 001-005 were not modified. The user previously reported successful hosted 003-005 application; no Phase 3 remote migration/deployment/provider change was performed.
+
+Delivered Talent & testers, Yachts & vehicles (including aviation), and Events & tickets screens plus /api/modules, dashboard/navigation entries and a typed FREE_OR_DEMO event provider with live payments BLOCKED. Shared styling, Syne/Figtree, branded loader, email-code Auth, HTTP-only session refresh, consent and existing property workflows are preserved.
+
+Recruitment: self-service, expressly opted-in candidate profiles with append-only publication consent; current platform consent/availability/mode/kind/location/skills eligibility; deterministic explained ranking; RECRUITER-owned opportunity drafts; independent publication; private applications with frozen submitted profile/opportunity snapshots and shortlist/decline/withdraw states. Later public profile edits do not rewrite the submitted snapshot. Withdrawal hides new discovery/progression while existing private application records remain. No scraper, third-party acquisition, automated outreach, resume/ID-photo workflow or fake contact data.
+
+Marketplaces: module-specific typed facts and role checks (SELLER dealer, AGENT broker), independent revision-bound publication, opted-in yacht/aircraft agent assignment/acceptance per revision, active-role checks on discovery and actions, private structured inquiries and append-only activity/review history. An edit clears publication/agent acceptance. Agent deactivation prevents private assignment/inquiry access and new acceptance. Published content never claims verified inventory, identity or credentials. All demos are explicitly fictitious with no fabricated Auth users or real seller/employer inbox.
+
+Events: ORGANIZER facts/dates/capacity, event-row-locked registration, buyer request-key serialization, active-registration uniqueness, immutable price/currency/event snapshots, FREE/DEMO modes, private opaque ticket references, printable tickets, cancellation/capacity release and organizer-only single-use check-in. Real check-in opens two hours before start; demo use can be tested earlier. Active registrations block event edits/archive. Cancelled attendees cannot read later private event drafts; original order snapshots remain accessible. Real paid checkout is rejected even through direct RPC/API requests. No card data, real charge/refund, payment-success claim or QR scanner is implemented.
+
+Final verification:
+- npm.cmd test: 66 passed, 0 failed. Real disposable PGlite PostgreSQL/RLS tests across all eight migrations plus domain/config/consent/OTP error suites. Covers mutation grants, private records/snapshots, independent review, role revocation, agent activity/revisions, opt-out, capacity/replay/cancellation, private draft visibility, ticket single-use/time checks, blocked real payment and immutable history.
+- npm.cmd run lint: passed with zero warnings.
+- npm.cmd run typecheck: passed; final production build also passed TypeScript.
+- npm.cmd run format:check: passed.
+- npm.cmd run build: passed, including /api/modules.
+- npm.cmd run test:browser: Phase 1 regression passed against the fixture applying all eight migrations.
+- npm.cmd run test:phase2-browser: Phase 2 regression passed with all eight migrations.
+- npm.cmd run test:phase3-browser: passed across separate owner/reviewer/applicant/agent/buyer contexts: profile publication/application/shortlisting/consent withdrawal, independent publication, yacht agent acceptance/inquiry, aircraft/vehicle filters, event capacity, DEMO checkout, private tickets, one-time check-in, blocked live payment, FREE registration/cancellation and mobile overflow.
+- Inspected desktop/mobile event ticket screenshots; prior HTML-reference styling retained. Screenshots remain ignored under .npm-cache. git diff --check passed.
+
+Local browser tests run actual Next.js routes and SQL/RLS with simulated Supabase Auth/Storage HTTP. They do not verify actual hosted email, multi-session hosted transaction contention, hosted service configuration or live payment/webhooks. Test-only role assignment helpers do not exist in production code. No new dependencies were required; the earlier external advisory-audit blocker remains unresolved and no audit pass is claimed.
+
+PHASE3_SETUP.md documents new migration order (006 then 007 then 008), role/account setup, hosted multi-account/RLS/consent/agent/capacity/replay/ticket acceptance, limits and payment-provider dependencies. README, Supabase setup, Vercel instructions and checklist reflect Phase 3 approval. Recent working panels are bounded at 100 records (tickets 500), and catalog browse pages at 12. Phase 3 code and local verification are delivered; hosted acceptance and real paid checkout remain open. Do not declare full production acceptance or start Phase 4.

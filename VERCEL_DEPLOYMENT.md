@@ -1,6 +1,6 @@
 ﻿# Vercel deployment - Phase 1
 
-The Next.js app can use Vercel's framework defaults; no custom vercel.json or static export is required. The current preview includes the approved Phase 1 shared core and Phase 2 property/forms workflows. Phase 3 is outside scope. No deployment has been performed by the agent.
+The Next.js app can use Vercel's framework defaults; no custom vercel.json or static export is required. The preview includes approved Phases 1-3. Phase 4 is outside scope. No deployment has been performed by the agent.
 
 ## Project settings
 
@@ -28,7 +28,7 @@ A Preview deployment is a different origin. Configure APP_BASE_URL for that Prev
 
 ## Supabase configuration
 
-Follow SUPABASE_SETUP.md to review/apply the five ordered migrations, skipping any already applied. Phase 2 requires migrations 003–005 and the private evidence bucket/policies. Vercel deployment does not apply them automatically. Never rerun or reset an existing schema blindly.
+Follow SUPABASE_SETUP.md to review/apply the eight ordered migrations, skipping any already applied. Phase 2 requires 003-005 and private evidence bucket/policies; Phase 3 requires 006-008. Vercel deployment does not apply them automatically. Never rerun or reset an existing schema blindly. Follow PHASE3_SETUP.md to test domain roles, reviews and ticketing. Real paid checkout remains blocked and requires no payment secrets for the delivered free/demo flows.
 
 Under Supabase Authentication URL Configuration, set Site URL to the exact live HTTPS origin. Keep email confirmation enabled. Replace the Confirm signup email body with `supabase/templates/confirmation.html`, containing:
 

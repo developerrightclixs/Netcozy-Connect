@@ -12,7 +12,7 @@ export function failure(e: unknown) {
               e.issues
                 .map((i) => i.path.join(".") + ": " + i.message)
                 .join("; ")
-            : "The property request could not be completed.",
+            : "The request could not be completed. Please try again.",
     },
     {
       status:

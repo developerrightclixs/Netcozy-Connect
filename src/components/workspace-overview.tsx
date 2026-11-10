@@ -123,6 +123,17 @@ export function Overview({ data: d }: { data: WorkspaceData }) {
             "Properties, evidence and partner forms",
           ],
           ["pipeline", "My pipeline", "Keep your next steps in one place"],
+          [
+            "talent",
+            "Talent & testers",
+            "Opt-in profiles and recruitment opportunities",
+          ],
+          [
+            "marketplace",
+            "Yachts & vehicles",
+            "Assigned agents and structured inquiries",
+          ],
+          ["events", "Events & tickets", "Free registration and demo checkout"],
         ].map(([path, title, hint]) => (
           <Link className="module-tile" key={path} href={"/" + path}>
             <span className="module-icon">
