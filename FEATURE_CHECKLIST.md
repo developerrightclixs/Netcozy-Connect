@@ -9,7 +9,7 @@
 - [x] Coding, test and security conventions; .env ignored and secrets not printed.
 - [x] Dependency installation recovered from a local cache; portable lockfile generated.
 - [x] Lint, TypeScript, build and initial infrastructure tests have passed.
-- [ ] Dependency advisory audit remains blocked by external registry access.
+- [x] Phase 4 registry audit completed; production audit and full install audit reported zero vulnerabilities after the scoped minimatch tooling fix.
 
 ## Phase 1 shared core - APPROVED
 
@@ -74,11 +74,22 @@ Phase 1 implementation is prepared and locally exercised; it is not declared ful
 - [ ] Verify hosted roles/RLS, concurrent capacity/replay, agent deactivation, consent withdrawal and actual Auth/email.
 - [ ] Real payment provider setup and verified webhook/settlement/refund integration remain external; live checkout is not claimed implemented.
 
-## Phase 4 - NOT APPROVED / not started
+## Phase 4 - APPROVED 2026-11-12 / manual-demo Studio locally verified; live providers and hosted acceptance pending
 
-- [ ] LI3K creative workflows and usage reporting.
+- [x] Private business/brand profiles, manual audience briefs and authorized-information acknowledgement.
+- [x] Explicit DEMO template caption/storyboard preparation; no fabricated AI calls or rendered media.
+- [x] Editable creative library, local-time planning calendar and revision-bound independent admin review.
+- [x] SQL-enforced approval invalidation on brand/content/image changes; idempotent immutable reviewed export packages.
+- [x] Private PNG/JPEG library, rights notes, bounded signature-checked upload, owner/admin access and short-lived signed links; scanning/video upload unavailable.
+- [x] Immutable owner-reported aggregate snapshots, provenance, bounded usage panels and no invented provider rates/billing.
+- [x] Typed BLOCKED AI/media/publishing/analytics status and safe manual export fallback.
+- [x] Public liveness-only endpoint, admin table-read readiness, baseline CSP/HSTS and production operations runbook.
+- [x] 76 automated tests, Phase 4 browser workflow and Phase 1/2/3 browser regressions passed. Lint, TypeScript, formatting, production build, auth deployment regression and desktop/mobile visual checks passed. Production audit and full dependency install audit: zero vulnerabilities after scoped tooling fix.
+- [ ] Apply reviewed migrations 009/010 after existing 001–008 in the authorized hosted project.
+- [ ] Hosted three-account Auth/Storage/RLS/review/export acceptance, expiry and concurrency verification.
 - [ ] Authorized live marketing/provider integrations.
-- [ ] Production security hardening, monitoring, deployment, backups and restoration.
+- [ ] Live AI image/video/text generation, verified analytics and approved commercial plans/billing.
+- [ ] Full production security review/CSP, distributed abuse controls, external monitoring, deployment and actual backup/restoration drill.
 
 ### Phase 1 authentication deployment correction
 

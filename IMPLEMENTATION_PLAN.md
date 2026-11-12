@@ -2,7 +2,43 @@
 
 ## Approval and scope
 
-Current checkpoint (2026-11-11): Phase 3 is explicitly approved and in implementation/local verification. Phases 1-2, code-based signup confirmation and the branded loader are preserved. The user reported applying migrations 003-005; hosted acceptance remains open. Historical pause/phase boundaries below are superseded by the later approvals. Stop before Phase 4. The latest delivery section records verification and remaining dependencies.
+Current checkpoint (2026-11-12): The user explicitly approved Phase 4. Earlier stop-before-Phase-4 boundaries are superseded. Preserve Phases 1-3, code-based confirmation, branded loader and existing styling. Hosted acceptance remains open.
+
+## Phase 4 approved architecture and implementation order
+
+1. Add migration 009 for private business/brand profiles, revision-bound creative drafts, independent admin reviews, export history, manually reported aggregate analytics and immutable usage records. Reuse existing Supabase sessions, RLS, audit and role checks; do not modify applied migrations or remotely apply schema.
+2. Deliver LI3K Studio with manual business onboarding, editable audience/messaging briefs, deterministic DEMO caption/script preparation, persistent creative library, calendar, review and approved manual export. Demo generation creates text/storyboards, not fabricated images/videos or AI calls. External image/video/text generation and publishing remain typed BLOCKED until configured and verified. No website fetching, scraping or recipient campaigns.
+3. Add private aggregate reporting and usage dashboard with clear provenance. Do not invent provider prices, subscriptions, live analytics or costs. Scheduling is a planning calendar; no background publishing is implied.
+4. Add operational health/readiness checks and production deployment/backup/restore/provider verification runbook. Production deployment, hosted migrations, external integrations and restore drills require actual infrastructure and are recorded as outstanding rather than claimed complete.
+5. Verify real disposable SQL/RLS and negative transitions, compiled browser workflow and earlier regressions; run lint, typecheck, formatting, tests, build and dependency audit. Record actual outcomes and remaining blockers.
+
+## Phase 4 local delivery checkpoint - 2026-11-12
+
+Implemented `/li3k-studio`, `/api/studio` and `/api/studio/assets`, with additive migrations 009 and 010. Existing 001-008 were not modified or remotely applied. The user approved Phase 4; earlier stop boundaries below are historical and superseded. No live provider or production deployment is claimed.
+
+Delivered manual business/brand onboarding, editable supplied audience/value/voice, deterministic DEMO caption/storyboard preparation, private creative library, PNG/JPEG asset upload with rights notes and immutable registration, local-time calendar planning, independent admin review, SQL-enforced revision/brand/image approval invalidation, replay-safe reviewed JSON export and manual aggregate reporting. Private files are labelled UPLOADED_UNSCANNED and signed access is 60 seconds. Image/video briefs are text, uploaded images are manual assets/posters, and no rendered video or AI media is fabricated. No recipient list, scraping, external send or automatic publishing exists.
+
+Studio templates record zero provider API calls. Reports explicitly label manual/unverified provenance, reject invalid/future periods and remain immutable. Recent panels show a bounded 100 records, not platform lifetime totals. Prices/subscriptions/cost estimates remain unconfigured because commercial terms and actual providers are not supplied. Provider readiness exposes typed BLOCKED statuses for AI text/media, live publishing and connected analytics. The optional provider-account question was sent; no provider choice or credentials are assumed.
+
+Added `/api/health` (public process liveness only) and `/api/operations` (administrator-only redacted table-read checks), an admin readiness panel, limited CSP embedding/base/form directives and production HSTS. PHASE4_SETUP.md covers exact migration order, private bucket setup, hosted three-account acceptance, provider enablement, deployment, monitoring, incident handling and a backup/restore drill. These source/runbook changes do not provision monitoring, execute backups, configure distributed rate limits or prove production hardening.
+
+Verification on the final local implementation:
+
+- `npm.cmd test`: 76 passed, zero failures. Actual disposable PostgreSQL/RLS applies all ten migrations. New coverage includes private studio access, mutation-grant rejection, independent/revoked-role review, stale versions, approval invalidation, immutable/replayed exports, manual metric constraints and private asset/Storage isolation.
+- `npm.cmd run lint`: passed with zero warnings, including after the scoped tooling fix.
+- `npm.cmd run typecheck`: passed; final production build also passed TypeScript.
+- `npm.cmd run format:check`: passed.
+- `npm.cmd run build`: passed, including all four new API areas.
+- `npm.cmd run test:phase4-browser`: passed through actual UI/server routes and SQL/RLS: brand, demo preparation, multipart private upload and signed access, cross-user rejection, attachment invalidation, independent review, export download, calendar, manual reports, content invalidation, mobile layouts, blocked publish, wrong-origin/oversize/malformed requests, headers and operational access.
+- `npm.cmd run test:browser`, `test:phase2-browser`, `test:phase3-browser`: passed with all ten migrations. Final Studio-only component extraction/style/accessibility corrections do not change earlier workflows; the final production build and Studio browser were rerun after those corrections.
+- `npm.cmd run test:auth-deployment`: passed; missing configuration remains a safe HTTP 503.
+- Desktop creative-library and mobile reports screenshots inspected; controls use existing navy/teal styling and no mobile horizontal page overflow. Temporary screenshots are ignored under .npm-cache.
+- `git diff --check`: passed.
+- Production-only `npm audit`: zero vulnerabilities. Full audit initially found seven moderate development-tooling findings from minimatch 10.2.6. Normal audit-fix dry run still reported them. Reviewed the upstream advisory and parser usage, then scoped an override to minimatch 11.0.1 only beneath typescript-estree. `npm install --ignore-scripts` updated one transitive package and added its dependency; full install audit reported zero vulnerabilities. Lockfile changes are limited to that fix; no new runtime dependency. Lint/tests/build passed afterward. See CONTRIBUTING.md for the advisory and override removal condition.
+
+Browser tests simulate Supabase Auth/Storage HTTP, using real local SQL/RLS. They do not verify actual email delivery, hosted RLS/policy interactions, signed URL expiry, multi-session hosted concurrency or provider behavior. No hosted migrations, bucket/Auth settings, deployment, outbound message, subscription or charge was performed.
+
+Remaining Phase 4 work requires infrastructure/provider inputs: apply reviewed missing migrations (006-008 first if absent, then 009/010) in the authorized development project; execute hosted acceptance; select and authorize AI/media/publishing/analytics providers and commercial terms; implement/verify real adapters; configure and validate monitoring, full CSP/distributed abuse controls, production deployment and backup/restore. Keep Phase 4 production acceptance open until these are evidenced.
 
 Phase 1 was explicitly approved by the user. Complete the shared core and stop before Phase 2. Supabase replaces the original Prisma recommendation. Preserve the navy/teal design direction and existing foundation checks.
 

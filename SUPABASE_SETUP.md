@@ -1,4 +1,6 @@
-# Supabase development setup for Phases 1-3
+# Supabase development setup for Phases 1-4
+
+Phase 4 adds migrations 009 and 010 after the existing 001-008. Follow [PHASE4_SETUP.md](PHASE4_SETUP.md) for the private Studio bucket, independent review and hosted three-account acceptance. Never rerun already applied migrations. Live AI generation, publishing and billing remain unavailable.
 
 The URL and publishable key in .env support normal Auth/data access. They intentionally cannot create tables or assign initial administrators. Use the Supabase project's SQL Editor as the authorized project operator, or your existing authorized Supabase CLI migration workflow. Do not paste credentials into chat or use a production project for development testing.
 

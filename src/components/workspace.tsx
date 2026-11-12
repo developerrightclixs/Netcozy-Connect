@@ -13,6 +13,7 @@ import { PropertyWorkspace } from "./property-workspace";
 import { Brand, NavIcon } from "./brand";
 import { WorkspaceLoader } from "./workspace-loader";
 import { ModuleWorkspace } from "./module-workspace";
+import { StudioWorkspace } from "./studio-workspace";
 const nav = [
   ["dashboard", "Overview", "◈"],
   ["onboarding", "Profile & goals", "◎"],
@@ -23,6 +24,7 @@ const nav = [
   ["talent", "Talent & testers", ""],
   ["marketplace", "Yachts & vehicles", ""],
   ["events", "Events & tickets", ""],
+  ["li3k-studio", "LI3K Studio", ""],
   ["settings", "Privacy & settings", "⚙"],
 ];
 export function Workspace({ section }: { section: string }) {
@@ -221,6 +223,8 @@ export function Workspace({ section }: { section: string }) {
                 <PropertyWorkspace />
               ) : ["talent", "marketplace", "events"].includes(section) ? (
                 <ModuleWorkspace key={section} section={section} />
+              ) : section === "li3k-studio" ? (
+                <StudioWorkspace />
               ) : section === "settings" ? (
                 <Settings data={data} run={run} />
               ) : (

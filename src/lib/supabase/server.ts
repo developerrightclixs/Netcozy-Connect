@@ -28,10 +28,18 @@ export class Supabase {
   private config = supabaseConfig();
   constructor(public token?: string) {}
   async uploadEvidence(key: string, bytes: Uint8Array, mime: string) {
+    return this.uploadPrivate("netcozy-property-evidence", key, bytes, mime);
+  }
+  async uploadPrivate(
+    bucket: "netcozy-property-evidence" | "netcozy-studio-assets",
+    key: string,
+    bytes: Uint8Array,
+    mime: string,
+  ) {
     let response: Response;
     try {
       response = await fetch(
-        this.config.url + "/storage/v1/object/netcozy-property-evidence/" + key,
+        this.config.url + "/storage/v1/object/" + bucket + "/" + key,
         {
           method: "POST",
           headers: {

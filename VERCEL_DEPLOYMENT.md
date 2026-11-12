@@ -51,6 +51,8 @@ References: https://vercel.com/docs/environment-variables, https://vercel.com/do
 
 ## Authentication troubleshooting
 
+Phase 4 now adds `/li3k-studio`, private media and operational endpoints. Follow [PHASE4_SETUP.md](PHASE4_SETUP.md): migrations 009/010 require 001–008, no live provider is enabled by deploying source, `/api/health` is liveness only, and `/api/operations` requires an administrator. Keep private bucket setup, hosted acceptance, backup/restore and monitoring evidence separate from deployment success.
+
 The earlier message "Check your email, password and input fields." also masked server configuration failures. The updated handler distinguishes AUTH_CONFIGURATION (HTTP 503), AUTH_INPUT (HTTP 400), provider errors and unexpected server errors. Input messages never echo submitted credentials. Server diagnostics record only an event code and error class.
 
 If authentication fails after deploying, verify SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY and APP_BASE_URL in the environment actually used by the deployment. This application expects those exact names, without a NEXT_PUBLIC_ prefix. Use the new sb_publishable_ key. APP_BASE_URL must match the live browser origin. Save changes and redeploy the updated source. The local ignored .env is not a substitute for Vercel environment variables.

@@ -1,13 +1,21 @@
 # Netcozy Connect
 
-Phases 1-3 implementation: shared core, properties/forms, opt-in recruitment, agent/dealer marketplaces and event ticketing using Next.js App Router, React, TypeScript, Zod and Supabase Auth/PostgreSQL/Storage. Supabase replaces the original Prisma recommendation. Phase 4 remains outside scope. Hosted acceptance and real provider integrations remain pending.
+Phases 1-3 plus the approved Phase 4 LI3K Studio implementation: shared core, properties/forms, opt-in recruitment, agent/dealer marketplaces, event ticketing and reviewed manual marketing workflows using Next.js App Router, React, TypeScript, Zod and Supabase Auth/PostgreSQL/Storage. Supabase replaces the original Prisma recommendation. Hosted acceptance, live provider integrations and production operations remain pending.
+
+## Phase 4 LI3K Studio
+
+Open **LI3K Studio** (`/li3k-studio`) for private business/brand settings, audience briefs, demo caption/storyboard preparation, editable drafts, private PNG/JPEG uploads, independent admin reviews, calendar planning, approved manual JSON export and owner-reported aggregate results. Brand/content/image changes invalidate approval in SQL. Templates are explicitly DEMO; no AI request, generated media, social publication, live analytics, payment or subscription is claimed. Usage shows zero provider calls and no invented prices.
+
+Apply reviewed migrations 009 then 010 only after 001–008; do not rerun existing migrations. No remote schema or bucket changes were performed here. See [PHASE4_SETUP.md](PHASE4_SETUP.md) for exact setup, three-account hosted acceptance, provider requirements and deployment/monitoring/backup/restore runbook. Uploaded images are private, at most 2 MB and labelled unscanned; signed links expire after 60 seconds. Video rendering/upload remains unavailable.
+
+`npm.cmd run test:phase4-browser` exercises the compiled Studio with test-only simulated Auth/Storage HTTP and real disposable SQL/RLS. Administration includes a read-only readiness check. `/api/health` is public process liveness only; it does not certify the database or production readiness. Baseline headers now include limited CSP directives and production HSTS; full CSP, distributed rate controls, actual external monitoring and restoration evidence remain launch requirements.
 
 ## Run locally
 
 1. Install Node.js 24 LTS (the recorded environment is 24.20.0).
 2. Run `npm.cmd ci` (or `npm ci` outside PowerShell). Use npm.cmd if Windows execution policy blocks npm.ps1. A portable package-lock.json is included.
 3. Keep your configured `.env`. For a new checkout copy `.env.example` to `.env`, fill in your development Supabase URL/publishable key, and set APP_BASE_URL to the browser origin you use.
-4. Follow [SUPABASE_SETUP.md](SUPABASE_SETUP.md): review/apply the eight ordered development migrations, skipping migrations already applied. Enable email confirmation and configure the code-only confirmation template. A publishable API key cannot apply SQL migrations.
+4. Follow [SUPABASE_SETUP.md](SUPABASE_SETUP.md): review/apply the ten ordered development migrations (see PHASE4_SETUP.md for 009/010), skipping migrations already applied. Enable email confirmation and configure the code-only confirmation template. A publishable API key cannot apply SQL migrations.
 5. Run `npm.cmd run db:check` for a read-only API reachability check.
 6. Run `npm.cmd run dev` and visit http://localhost:3000. Sign up with your own email, confirm the email, sign in, complete the explicitly labelled demo identity step, and save a profile and goal.
 7. For a compiled application run `npm.cmd run build`, then `npm.cmd start`. Production hosting must use HTTPS. No production deployment is included here.
@@ -42,13 +50,13 @@ Server code uses documented Supabase Auth/PostgREST HTTP APIs and built-in fetch
 - `npm.cmd run test:phase3-browser`: compiled-app recruitment opt-in/application/shortlist and consent, independent publication, assigned yacht agent acceptance/inquiries, aircraft/vehicle filters, event capacity, demo checkout, private tickets, single-use check-in, blocked real payments and free registration/cancellation. Simulated Supabase Auth HTTP with actual PGlite SQL/RLS on loopback ports 4877 and 3103; not hosted concurrency or live provider verification.
 - `npm.cmd run test:phase2-browser`: compiled-app property import/preview/reimport, search/pagination, private evidence, two-user isolation, independent claim/form reviews, edit invalidation and simulated delivery. Uses simulated Auth/Storage HTTP contracts with real disposable SQL/RLS on loopback ports 4876 and 3102. Does not prove hosted Storage or real email delivery.
 - `npm.cmd run db:check`: real API reachability only; does not query rows or prove schema/RLS/migrations.
-- `npm.cmd audit`: needs registry access; it is blocked in the current agent environment and is not reported as passing.
+- `npm.cmd audit`: needs registry access; the Phase 4 install audit reported zero vulnerabilities after the scoped development-tooling fix.
 
 Actual results and outstanding hosted verification are tracked in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) and [FEATURE_CHECKLIST.md](FEATURE_CHECKLIST.md).
 
 ## Provider status and boundaries
 
-Supabase API reachability was verified by the user. Local application/SQL integration tests use the test fixture; hosted migrations, real email delivery and live end-to-end acceptance remain pending. Identity is DEMO (never a real verification); LinkedIn OAuth/import, external email campaigns, SMS/WhatsApp, payments, licensed datasets and AI media providers are BLOCKED/unimplemented. No service pretends to be live. Production hardening and marketplace modules remain later-phase work.
+Supabase API reachability was verified by the user. Local application/SQL integration tests use the test fixture; hosted migrations, real email delivery and live end-to-end acceptance remain pending. Identity is DEMO (never a real verification); LinkedIn OAuth/import, external email campaigns, SMS/WhatsApp, payments, licensed datasets and AI media providers are BLOCKED/unimplemented. No service pretends to be live. Production acceptance and live integrations remain pending; marketplace and Studio workflows are locally implemented.
 
 References: [Supabase Auth HTTP API](https://supabase.github.io/auth/), [email templates](https://supabase.com/docs/guides/auth/auth-email-templates), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [SQL migrations](https://supabase.com/docs/guides/local-development/database-migrations).
 
@@ -66,7 +74,7 @@ Property details support edits, independent evidence-backed claim review, privat
 
 Load fictitious developers or supply authorized partner preferences. Matching filters region, acreage, budget, availability, matching consent and demo mode, with deterministic scoring/reasons. Create mapped forms from approved template versions. Editable drafts must be submitted to another ADMIN/SUPER_ADMIN for version-bound review; property/partner/claim changes invalidate unsent approvals. Owners cannot approve their own submissions. Only approved DEMO records can create immutable **SIMULATED_SENT** receipts; no actual message is sent. Licensed feeds and live delivery remain typed BLOCKED adapters.
 
-Property lists use 20-record pagination and address search across owned records. History/review panels display bounded recent records with their limits shown. The shared-core activity/admin audit includes Phase 2 mutations. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for private bucket and hosted acceptance instructions. The supplied HTML design reference defines the navy sidebar, teal actions, pale surfaces, rounded cards, gallery and dashboard hierarchy. Existing Syne/Figtree typography is retained; LI3K/live marketing remain outside scope.
+Property lists use 20-record pagination and address search across owned records. History/review panels display bounded recent records with their limits shown. The shared-core activity/admin audit includes Phase 2 mutations. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for private bucket and hosted acceptance instructions. The supplied HTML design reference defines the navy sidebar, teal actions, pale surfaces, rounded cards, gallery and dashboard hierarchy. Existing Syne/Figtree typography is retained; LI3K manual/demo Studio is implemented in Phase 4; live marketing remains blocked.
 
 ## Phase 3 recruitment, marketplaces and events
 
@@ -78,4 +86,4 @@ RECRUITER creates recruitment opportunities; SELLER creates dealer inventory or 
 
 All listing edits return to DRAFT and invalidate publication/agent acceptance. Content review is explicitly separate from identity/inventory verification. Application/inquiry status changes are in-app only. Demos have no fabricated Auth accounts, real contacts or actual admission. Global demo opportunities/inventory are for browsing/matching, with no fake employer/seller inbox; owned demo listings can exercise the multi-account workflow. Demo event dates are fixed future sample dates and naturally close when those dates pass. Panels show bounded recent records (100 candidates/owned listings/applications/inquiries/orders/reviews/history, 500 tickets; browse pages contain 12 records); no unbounded reporting/export is claimed.
 
-Setup and hosted acceptance are documented in [PHASE3_SETUP.md](PHASE3_SETUP.md). No production deployment, remote migration, outbound message, live payment or Phase 4 work was performed.
+Setup and hosted acceptance are documented in [PHASE3_SETUP.md](PHASE3_SETUP.md). No production deployment, remote migration, outbound message or live payment was performed. Phase 4 progress is documented above and in PHASE4_SETUP.md.

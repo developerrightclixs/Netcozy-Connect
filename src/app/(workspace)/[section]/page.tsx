@@ -17,6 +17,7 @@ export default async function WorkspacePage({
       "talent",
       "marketplace",
       "events",
+      "li3k-studio",
       "settings",
       "admin",
     ].includes(section)

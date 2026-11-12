@@ -1,6 +1,7 @@
 ﻿import { roles } from "@/features/core/domain";
 import type { WorkspaceData, Run } from "@/features/core/ui-types";
 import { field, Select, Empty, AuditTable } from "./ui";
+import { OperationsReadiness } from "./operations-readiness";
 export function Admin({ data: d, run }: { data: WorkspaceData; run: Run }) {
   if (!d.admin)
     return (
@@ -33,6 +34,7 @@ export function Admin({ data: d, run }: { data: WorkspaceData; run: Run }) {
   }
   return (
     <>
+      <OperationsReadiness />
       <div className="stats">
         {[
           ["Profiles (first 200)", a.users.length],

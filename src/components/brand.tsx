@@ -37,6 +37,7 @@ export function NavIcon({ name }: { name: string }) {
     marketplace: "M3 18h18l-3 3H6zM12 3v13H5zM14 6l5 10h-5",
     vehicles: "M3 16v-5l3-6h12l3 6v5M3 11h18M6 16v3M18 16v3M7 14h1M16 14h1",
     events: "M4 5h16v16H4zM8 2v6M16 2v6M4 10h16",
+    "li3k-studio": "M4 4h16v16H4zM4 15l5-5 4 4 3-3 4 4M15 7h1",
     settings:
       "M4 4v6M4 14v6M12 4v10M12 18v2M20 4v2M20 10v10M1 10h6M9 14h6M17 6h6",
     admin: "M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM9 12l2 2 4-4",

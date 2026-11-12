@@ -18,6 +18,7 @@
     "test:browser": "node tests/browser.mjs",
     "test:phase2-browser": "node tests/phase2-browser.mjs",
     "test:phase3-browser": "node tests/phase3-browser.mjs",
+    "test:phase4-browser": "node tests/phase4-browser.mjs",
     "format": "prettier --write src tests scripts package.json tsconfig.json next.config.mjs eslint.config.mjs",
     "format:check": "prettier --check src tests scripts package.json tsconfig.json next.config.mjs eslint.config.mjs",
     "test:auth-deployment": "node tests/auth-deployment.mjs"
@@ -27,6 +28,11 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "zod": "^4.0.0"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.1"
+    }
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.15",

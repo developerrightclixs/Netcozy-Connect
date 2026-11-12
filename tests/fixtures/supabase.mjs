@@ -37,8 +37,11 @@ export async function fixture(port = 4874) {
         const chunks = [];
         for await (const chunk of req) chunks.push(chunk);
         const bytes = Buffer.concat(chunks);
+        const bucket = url.pathname.includes("/netcozy-studio-assets/")
+          ? "netcozy-studio-assets"
+          : "netcozy-property-evidence";
         const binaryUpload = url.pathname.startsWith(
-          "/storage/v1/object/netcozy-property-evidence/",
+          "/storage/v1/object/" + bucket + "/",
         );
         const data =
           bytes.length && !binaryUpload ? JSON.parse(bytes.toString()) : {};
@@ -121,14 +124,12 @@ export async function fixture(port = 4874) {
         await db.exec("set role authenticated");
         if (binaryUpload && req.method === "POST") {
           const key = decodeURIComponent(
-            url.pathname.slice(
-              "/storage/v1/object/netcozy-property-evidence/".length,
-            ),
+            url.pathname.slice(("/storage/v1/object/" + bucket + "/").length),
           );
           await db.query(
             "insert into storage.objects(bucket_id,name,owner_id,metadata) values($1,$2,$3,$4)",
             [
-              "netcozy-property-evidence",
+              bucket,
               key,
               user.id,
               JSON.stringify({
@@ -141,34 +142,30 @@ export async function fixture(port = 4874) {
           return send(200, { Key: key });
         }
         if (
-          url.pathname.startsWith(
-            "/storage/v1/object/sign/netcozy-property-evidence/",
-          ) &&
+          url.pathname.startsWith("/storage/v1/object/sign/" + bucket + "/") &&
           req.method === "POST"
         ) {
           const key = decodeURIComponent(
             url.pathname.slice(
-              "/storage/v1/object/sign/netcozy-property-evidence/".length,
+              ("/storage/v1/object/sign/" + bucket + "/").length,
             ),
           );
           const rows = await db.query(
             "select id from storage.objects where bucket_id=$1 and name=$2",
-            ["netcozy-property-evidence", key],
+            [bucket, key],
           );
           if (!rows.rows.length) return send(403, {});
           const token = randomUUID();
           signedTokens.set(token, key);
           return send(200, {
-            signedURL:
-              "/object/sign/netcozy-property-evidence/" +
-              key +
-              "?token=" +
-              token,
+            signedURL: "/object/sign/" + bucket + "/" + key + "?token=" + token,
           });
         }
         if (url.pathname.startsWith("/rest/v1/rpc/")) {
           const name = url.pathname.split("/").at(-1);
           const functions = {
+            nc_studio_mutate: ["input"],
+            nc_studio_asset: ["input"],
             nc_demo_identity: [],
             nc_complete_onboarding: ["input"],
             nc_assign_role: ["subject", "wanted_role", "remove_role"],

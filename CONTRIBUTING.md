@@ -26,4 +26,6 @@ Run lint, typecheck, tests and build after substantive changes. Test behavior an
 
 ## External integrations
 
+Phase 4 tooling maintenance pins `minimatch` to 11.0.1 only beneath `@typescript-eslint/typescript-estree` via npm overrides. The inherited 10.2.6 was affected by [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249); the normal audit-fix preview did not clear it. The override leaves ESLint's separate minimatch 3 dependency intact. Keep the override until the upstream parser dependency supports a patched version, and verify lint/build when changing it. The lockfile install uses `--ignore-scripts`; no new runtime dependency was introduced.
+
 Represent providers as DEMO, BLOCKED, CONFIGURED or VERIFIED. Missing permissions, keys, contracts or legal clearance must never silently enable a production path. Add typed provider interfaces with the phase that needs them; do not build future integrations early.
