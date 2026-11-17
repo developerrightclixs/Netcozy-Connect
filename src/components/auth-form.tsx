@@ -62,7 +62,11 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
         ? { email: fields.get("email"), token: fields.get("token") }
         : action === "resend"
           ? { email: fields.get("email") }
-          : { email: fields.get("email"), password: fields.get("password") };
+          : {
+              email: fields.get("email"),
+              password: fields.get("password"),
+              ...(action === "signup" ? { name: fields.get("name") } : {}),
+            };
     try {
       const response = await fetch("/api/auth", {
         method: "POST",
@@ -117,6 +121,9 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
         </div>
       </div>
       <main className="auth-main">
+        <div className="auth-mobile-brand">
+          <Brand href="/" />
+        </div>
         <Link className="back" href="/">
           ← Back to Netcozy
         </Link>
@@ -164,6 +171,18 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
                 void submit(signup ? "signup" : "login", e.currentTarget);
               }}
             >
+              {signup && (
+                <label>
+                  Full name
+                  <input
+                    name="name"
+                    autoComplete="name"
+                    required
+                    minLength={2}
+                    maxLength={100}
+                  />
+                </label>
+              )}
               <label>
                 Email address
                 <input

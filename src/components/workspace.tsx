@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useSyncExternalStore } from "react";
 import { isAdmin } from "@/features/core/domain";
 import type { WorkspaceData, Run } from "@/features/core/ui-types";
 import { Overview } from "./workspace-overview";
@@ -27,8 +27,29 @@ const nav = [
   ["li3k-studio", "LI3K Studio", ""],
   ["settings", "Privacy & settings", "⚙"],
 ];
+const sidebarPreference = "netcozy-sidebar-collapsed";
+let sidebarFallback = false;
+function subscribeToSidebar(onChange: () => void) {
+  window.addEventListener(sidebarPreference, onChange);
+  return () => window.removeEventListener(sidebarPreference, onChange);
+}
+function readSidebarPreference() {
+  try {
+    return window.sessionStorage.getItem(sidebarPreference) === "true";
+  } catch {
+    return sidebarFallback;
+  }
+}
 export function Workspace({ section }: { section: string }) {
   const router = useRouter();
+  const sidebarCollapsed = useSyncExternalStore(
+    subscribeToSidebar,
+    readSidebarPreference,
+    () => false,
+  );
+  const sidebarAction = sidebarCollapsed
+    ? "Expand sidebar"
+    : "Collapse sidebar";
   const [data, setData] = useState<WorkspaceData | null>(null),
     [error, setError] = useState(""),
     [message, setMessage] = useState(""),
@@ -102,12 +123,49 @@ export function Workspace({ section }: { section: string }) {
   }
   const name = data?.profile?.display_name || "Your workspace";
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-sidebar-collapsed={sidebarCollapsed}>
       <a className="skip" href="#workspace-main">
         Skip to content
       </a>
-      <aside className="sidebar">
-        <Brand />
+      <aside className="sidebar" id="workspace-sidebar">
+        <div className="sidebar-header">
+          <Brand />
+          <button
+            type="button"
+            className="sidebar-toggle"
+            aria-label={sidebarAction}
+            title={sidebarAction}
+            aria-expanded={!sidebarCollapsed}
+            aria-controls="workspace-sidebar"
+            onClick={() => {
+              sidebarFallback = !sidebarCollapsed;
+              try {
+                window.sessionStorage.setItem(
+                  sidebarPreference,
+                  String(sidebarFallback),
+                );
+              } catch {
+                // The current page can still toggle when storage is unavailable.
+              }
+              window.dispatchEvent(new Event(sidebarPreference));
+            }}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <path d="M9 4v16" />
+            </svg>
+          </button>
+        </div>
         <p className="nav-label">YOUR WORKSPACE</p>
         <nav aria-label="Workspace">
           {nav.map(([path, label]) => (
@@ -115,16 +173,24 @@ export function Workspace({ section }: { section: string }) {
               key={path}
               href={"/" + path}
               aria-current={section === path ? "page" : undefined}
+              aria-label={label}
+              title={sidebarCollapsed ? label : undefined}
               className={section === path ? "active" : ""}
             >
               <NavIcon name={path} />
-              {label}
+              <span className="sidebar-link-label">{label}</span>
             </Link>
           ))}
           {data && isAdmin(data.roles) && (
-            <Link href="/admin" className={section === "admin" ? "active" : ""}>
+            <Link
+              href="/admin"
+              className={section === "admin" ? "active" : ""}
+              aria-current={section === "admin" ? "page" : undefined}
+              aria-label="Administration"
+              title={sidebarCollapsed ? "Administration" : undefined}
+            >
               <NavIcon name="admin" />
-              Administration
+              <span className="sidebar-link-label">Administration</span>
             </Link>
           )}
         </nav>

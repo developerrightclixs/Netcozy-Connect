@@ -81,6 +81,7 @@ export async function fixture(port = 4874) {
             id,
             email: data.email,
             password: data.password,
+            user_metadata: data.data,
           });
           return send(200, { id });
         }

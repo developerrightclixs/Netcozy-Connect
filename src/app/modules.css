@@ -124,17 +124,9 @@
   font-size: 14px;
   overflow-wrap: anywhere;
 }
-.sidebar {
-  overflow-y: auto;
-}
 @media (max-width: 1200px) {
   .module-listing-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 850px) {
-  .sidebar {
-    overflow-y: visible;
   }
 }
 @media (max-width: 520px) {

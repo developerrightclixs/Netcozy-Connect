@@ -89,7 +89,22 @@ try {
   let errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(base);
+  const branding = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+  });
+  for (const route of ["/", "/login", "/signup"]) {
+    await branding.goto(base + route);
+    const logo = branding.locator("img.brand-logo:visible");
+    await logo.waitFor();
+    assert.ok(
+      await logo.evaluate((image) =>
+        image.decode().then(() => image.naturalWidth),
+      ),
+    );
+  }
+  await branding.close();
   await page.getByRole("link", { name: "Get started", exact: false }).click();
+  await page.getByLabel("Full name").fill("Alex at Signup");
   await page
     .getByLabel("Email address", { exact: true })
     .fill("phase1@example.test");
@@ -151,6 +166,12 @@ try {
   await page.getByLabel("Confirmation code").fill("123456");
   await page.getByRole("button", { name: "Verify email", exact: true }).click();
   await page.waitForURL("**/dashboard");
+  const logo = page.locator("img.brand-logo:visible");
+  await logo.waitFor();
+  await logo.evaluate((image) => image.decode());
+  await page.goto(base);
+  await page.getByRole("link", { name: "Alex at Signup", exact: true }).click();
+  await page.waitForURL("**/dashboard");
   await page
     .getByRole("link", { name: "Complete your profile", exact: true })
     .click();
@@ -174,6 +195,9 @@ try {
     .click();
   await page.waitForURL("**/dashboard");
   await page.getByRole("heading", { name: "Welcome, Alex." }).waitFor();
+  await page.goto(base);
+  await page.getByRole("link", { name: "Alex Founder", exact: true }).click();
+  await page.waitForURL("**/dashboard");
   await page
     .getByRole("navigation", { name: "Workspace" })
     .getByRole("link", { name: "Discover matches", exact: false })
@@ -316,8 +340,45 @@ try {
     .getByRole("status")
     .filter({ hasText: "Saved successfully" })
     .waitFor();
+  await page.setViewportSize({ width: 900, height: 620 });
+  const sidebar = page.locator(".sidebar");
+  const sidebarLayout = await sidebar.evaluate((element) => {
+    const brand = element.querySelector(".brand");
+    const text = document.createRange();
+    text.selectNodeContents(brand.querySelector("span"));
+    return {
+      scrollable: element.scrollHeight > element.clientHeight,
+      scrollbarWidth: getComputedStyle(element).scrollbarWidth,
+      nameFits:
+        text.getBoundingClientRect().right <=
+        brand.getBoundingClientRect().right,
+    };
+  });
+  assert.deepEqual(sidebarLayout, {
+    scrollable: true,
+    scrollbarWidth: "thin",
+    nameFits: true,
+  });
+  const expandedWidth = (await sidebar.boundingBox()).width;
+  await page.getByRole("button", { name: "Collapse sidebar" }).click();
+  const expandSidebar = page.getByRole("button", { name: "Expand sidebar" });
+  assert.equal(await expandSidebar.getAttribute("aria-expanded"), "false");
+  assert.ok((await sidebar.boundingBox()).width < expandedWidth);
+  const overviewLink = sidebar.getByRole("link", { name: "Overview" });
+  assert.equal(
+    await overviewLink.locator(".sidebar-link-label").isVisible(),
+    false,
+  );
+  await overviewLink.click();
+  await page.waitForURL("**/dashboard");
+  await expandSidebar.waitFor();
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(base + "/dashboard");
+  await expandSidebar.click();
+  assert.equal(
+    await overviewLink.locator(".sidebar-link-label").isVisible(),
+    true,
+  );
   await page.getByRole("heading", { name: "Welcome, Alex." }).waitFor();
   assert.equal(
     await page.evaluate(

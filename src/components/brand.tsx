@@ -1,21 +1,19 @@
+import Image from "next/image";
 import Link from "next/link";
 export function Brand({ href = "/dashboard" }: { href?: string }) {
   return (
-    <Link className="brand brand-reference" href={href}>
-      <span className="brand-monogram" aria-hidden="true">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M6 18V6l12 12V6" />
-        </svg>
-      </span>
+    <Link
+      className="brand brand-reference"
+      href={href}
+      aria-label="Netcozy Connect"
+    >
+      <Image
+        className="brand-logo"
+        src="/netcozy-connect-logo.jpg"
+        alt=""
+        width={44}
+        height={44}
+      />
       <span>
         Netcozy <span className="brand-light">Connect</span>
       </span>

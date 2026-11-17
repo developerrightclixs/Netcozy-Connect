@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Netcozy Connect",
   description: "Netcozy Connect development foundation",
   robots: { index: false, follow: false },
+  icons: { icon: "/netcozy-connect-logo.jpg" },
 };
 export default function RootLayout({
   children,

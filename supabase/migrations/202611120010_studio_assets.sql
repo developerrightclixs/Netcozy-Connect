@@ -1,4 +1,10 @@
 begin;
+-- Fail before creating any asset objects when the Studio foundation is absent.
+do $$ begin
+ if to_regclass('public.nc_studio_creatives') is null then
+  raise exception 'Phase 4 prerequisite missing: apply 202611120009_studio.sql successfully in this same database before 202611120010_studio_assets.sql. Do not rerun migrations already applied.';
+ end if;
+end $$;
 create table public.nc_studio_assets (
  id uuid primary key, owner_id uuid not null references auth.users(id),
  label text not null check(length(btrim(label)) between 3 and 120),

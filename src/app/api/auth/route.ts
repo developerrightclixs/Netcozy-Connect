@@ -6,11 +6,35 @@ import {
   session,
   setSession,
   clearSession,
+  signupDisplayName,
   sameOrigin,
   ServiceError,
   type Tokens,
 } from "@/lib/supabase/server";
 import { authSchema, loginSchema } from "@/features/core/validation";
+export async function GET(request: NextRequest) {
+  const headers = { "Cache-Control": "private, no-store" };
+  if (!request.cookies.has("nc-access") && !request.cookies.has("nc-refresh"))
+    return NextResponse.json({ account: null }, { headers });
+  try {
+    const s = await session(request);
+    let name = signupDisplayName(s.user);
+    try {
+      const [profile] = await s.client.table<{ display_name: string }>(
+        "profiles",
+        "select=display_name&id=eq." + encodeURIComponent(s.user.id),
+      );
+      name = profile?.display_name.trim() || name;
+    } catch {
+      // Signup names are available even while the profile schema is being set up.
+    }
+    const response = NextResponse.json({ account: { name } }, { headers });
+    if (s.tokens) setSession(response, s.tokens);
+    return response;
+  } catch {
+    return NextResponse.json({ account: null }, { headers });
+  }
+}
 export async function POST(request: NextRequest) {
   try {
     sameOrigin(request);
@@ -76,7 +100,13 @@ export async function POST(request: NextRequest) {
         "Enable email confirmation in your Supabase Auth settings before using this application.",
       );
     if (body.action === "signup") {
-      await client.request("/auth/v1/signup", "POST", input);
+      const { email, password } = input;
+      const name = "name" in input ? input.name : undefined;
+      await client.request("/auth/v1/signup", "POST", {
+        email,
+        password,
+        ...(name ? { data: { display_name: name } } : {}),
+      });
       return NextResponse.json({
         ok: true,
         message:

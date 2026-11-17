@@ -13,6 +13,8 @@ export function authFailure(error) {
       field = issue?.path.at(-1);
     let message = "Check the authentication form and try again.";
     if (field === "email") message = "Enter a valid email address.";
+    if (field === "name")
+      message = "Enter a name between 2 and 100 characters.";
     if (field === "password")
       message =
         issue.code === "too_small" && issue.minimum >= 12

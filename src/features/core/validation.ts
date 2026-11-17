@@ -91,6 +91,7 @@ export const roleSchema = z
 export const idSchema = z.object({ id: uuid }).strict();
 export const authSchema = z
   .object({
+    name: z.string().trim().min(2).max(100).optional(),
     email: z.string().trim().email().max(254),
     password: z.string().min(12).max(128),
   })

@@ -11,6 +11,16 @@ Prerequisites: migrations 001–008, Supabase Auth/Storage schemas and existing 
 1. `supabase/migrations/202611120009_studio.sql`
 2. `supabase/migrations/202611120010_studio_assets.sql`
 
+If 010 reports `relation public.nc_studio_creatives does not exist`, 009 has not completed in that database. Check the selected Supabase project, then run this read-only query:
+
+```sql
+select to_regclass('public.nc_studio_brands') as studio_brands,
+       to_regclass('public.nc_studio_creatives') as studio_creatives,
+       to_regclass('public.nc_studio_assets') as studio_assets;
+```
+
+If the first two results are NULL, run the entire 009 file, including BEGIN/COMMIT, and confirm success before running the entire 010 file. If only some tables exist, inspect the earlier migration error and existing schema before retrying; do not drop tables or blindly rerun successful migrations. The supplied files are transactional, so a failed full-file run should not leave its earlier table creations committed. A failed/aborted transaction may require `ROLLBACK;` before retrying in the same SQL session. 010 now checks this prerequisite before creating asset objects.
+
 009 adds six studio tables, owner/admin read policies, append-only review/export/usage/report records and a controlled mutation RPC. Brand updates lock before creative updates; review/export use the same ordering and reject stale revisions. Brand changes invalidate all linked approvals. Creative edits and image attachments reset review. Members cannot directly insert, update or delete studio tables or assign approval.
 
 010 adds a private `netcozy-studio-assets` bucket, immutable media metadata and attachment RPC. Bucket settings: private, maximum 2 MB, PNG/JPEG only. Existing permissive bucket settings cause the migration to fail for review. Policies allow an owner to upload only to their registered pending object; owners/admins can read authorized objects. No overwrite/delete policy is added. Audit other existing Storage policies: permissive policies combine with OR and must not independently expose this bucket.

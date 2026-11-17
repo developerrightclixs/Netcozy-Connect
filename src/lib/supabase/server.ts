@@ -17,7 +17,12 @@ export type AuthUser = {
   id: string;
   email?: string;
   email_confirmed_at?: string;
+  user_metadata?: { display_name?: unknown };
 };
+export function signupDisplayName(user: AuthUser) {
+  const name = user.user_metadata?.display_name;
+  return typeof name === "string" ? name.trim().slice(0, 100) : "";
+}
 type Tokens = {
   access_token: string;
   refresh_token: string;

@@ -398,9 +398,13 @@ fieldset.workspace-fields {
   top: 12px;
 }
 .app-shell {
+  --sidebar-width: 240px;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   min-height: 100vh;
+}
+.app-shell[data-sidebar-collapsed="true"] {
+  --sidebar-width: 76px;
 }
 .sidebar {
   background: var(--navy);
@@ -412,17 +416,70 @@ fieldset.workspace-fields {
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 .sidebar .brand {
-  padding-left: 8px;
   color: var(--cyan);
+  min-width: 0;
+}
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sidebar-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  flex: none;
+  border: 1px solid #5cc7d43b;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cyan);
+  cursor: pointer;
+}
+.sidebar-toggle:hover {
+  background: #5cc7d424;
+}
+[data-sidebar-collapsed="true"] .sidebar {
+  padding-inline: 10px;
+}
+[data-sidebar-collapsed="true"] .sidebar-header {
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+[data-sidebar-collapsed="true"]
+  .sidebar
+  :is(
+    .brand > span,
+    .nav-label,
+    .sidebar-link-label,
+    .sidebar-note,
+    .sidebar-user
+  ) {
+  display: none;
+}
+[data-sidebar-collapsed="true"] .sidebar nav a {
+  justify-content: center;
+  padding: 10px;
 }
 .sidebar .brand > span,
 .sidebar .brand-light {
   color: #fff;
 }
 .sidebar .brand > span {
-  font-size: 17px;
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.15;
+}
+.sidebar,
+.sidebar nav {
+  scrollbar-width: thin;
+  scrollbar-color: #5baeb9 var(--navy);
 }
 .nav-label {
   font-size: 9px;
@@ -458,6 +515,11 @@ nav a:hover {
   font-size: 13px;
   padding: 12px;
   border-radius: 8px;
+}
+.sidebar nav .sidebar-link-label {
+  font-size: inherit;
+  font-weight: inherit;
+  min-width: 0;
 }
 .sidebar nav a.active {
   color: #fff;
@@ -963,6 +1025,16 @@ nav a:hover {
   bottom: 25px;
   left: 5%;
 }
+.landing-account {
+  min-width: 0;
+}
+.landing-account .landing-account-name {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .landing-features {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1004,6 +1076,9 @@ nav a:hover {
 }
 .auth-aside .brand {
   margin-bottom: auto;
+}
+.auth-mobile-brand {
+  display: none;
 }
 .auth-aside .eyebrow {
   margin-top: 80px;
@@ -1061,7 +1136,7 @@ nav a:hover {
 }
 @media (max-width: 1200px) {
   .app-shell {
-    grid-template-columns: 210px minmax(0, 1fr);
+    --sidebar-width: 210px;
   }
   .sidebar {
     padding: 25px 14px;
@@ -1104,10 +1179,19 @@ nav a:hover {
     border-bottom: 1px solid var(--border);
     border-right: 0;
     padding: 12px 20px;
+    overflow: visible;
+    scrollbar-gutter: auto;
   }
   .sidebar .brand {
     font-size: 30px;
     padding: 0;
+  }
+  [data-sidebar-collapsed="true"] .sidebar {
+    padding-inline: 20px;
+  }
+  [data-sidebar-collapsed="true"] .sidebar-header {
+    flex-direction: row;
+    margin-bottom: 0;
   }
   .brand > span {
     font-size: 17px;
@@ -1164,6 +1248,10 @@ nav a:hover {
   }
   .auth-aside {
     display: none;
+  }
+  .auth-mobile-brand {
+    display: block;
+    margin-bottom: 16px;
   }
   .auth-main {
     min-height: 100vh;
@@ -1372,15 +1460,8 @@ nav a:hover {
   font-size: 17px;
   letter-spacing: -0.6px;
 }
-.brand.brand-reference .brand-monogram {
-  width: 34px;
-  height: 34px;
+.brand.brand-reference .brand-logo {
   border-radius: 9px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent);
-  color: #101b33;
   flex-shrink: 0;
 }
 .panel,

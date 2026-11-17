@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   session,
   setSession,
+  signupDisplayName,
   sameOrigin,
   ServiceError,
   type Session,
@@ -145,7 +146,12 @@ async function bootstrap(s: Session) {
   return {
     user: { id: s.user.id, email: s.user.email },
     roles: assigned,
-    profile: profiles[0] ?? null,
+    profile: profiles[0]
+      ? {
+          ...profiles[0],
+          display_name: profiles[0].display_name || signupDisplayName(s.user),
+        }
+      : null,
     goals,
     consents,
     identity,
